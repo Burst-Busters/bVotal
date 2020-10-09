@@ -1,0 +1,23 @@
+{
+  "name": "bvotal",
+  "version": "1.0.0",
+  "description": "Anonymous, secret, transparent, cheap and scalable voting system based on Burstcoin Blockchain",
+  "private": true,
+  "scripts": {
+    "dev:frontend": "yarn --cwd packages/frontend start",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Burst-Busters/bVotal.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Burst-Busters/bVotal/issues"
+  },
+  "homepage": "https://github.com/Burst-Busters/bVotal#readme"
+}
