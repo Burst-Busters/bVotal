@@ -14,8 +14,7 @@ const options = IsDebugMode
         level: 'error'
     }
 
-const
-    logger = pino(options)
+const logger = pino(options)
 
 module.exports = {
     logger
