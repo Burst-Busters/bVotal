@@ -6,9 +6,9 @@ program
     .description('Starts the Eligibility Service')
     .action(start)
 
-program.command('create')
+program.command('new <name> ')
     .description('Bootstraps a new election campaign')
-    .action(bootstrap)
+    .action(async name => bootstrap({name}))
 
 
 program.parseAsync(process.argv);

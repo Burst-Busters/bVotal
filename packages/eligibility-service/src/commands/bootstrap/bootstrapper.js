@@ -1,3 +1,4 @@
+const crypto = require('crypto')
 const {BurstService} = require("@burstjs/core");
 const {BurstValue} = require("@burstjs/util");
 const {
@@ -19,9 +20,11 @@ class Bootstrapper {
         this._targetBalance = BurstValue.fromBurst(targetBalance)
     }
 
-    #createRandomAccount() {
+    async #createRandomAccount() {
         const seed = crypto.randomBytes(64)
-        this._passphrase = new PassPhraseGenerator().generatePassPhrase(seed).join(" ");
+        const generator = new PassPhraseGenerator();
+        const words = await generator.generatePassPhrase(Array.from(seed));
+        this._passphrase = words.join(" ")
         const keys = generateMasterKeys(this._passphrase);
         this._publicKey = keys.publicKey;
         this._accountID = getAccountIdFromPublicKey(keys.publicKey);
@@ -37,8 +40,8 @@ class Bootstrapper {
 
     static async run({campaignName, targetBalance}) {
         const instance = new Bootstrapper({campaignName, targetBalance})
-        instance.#createRandomAccount()
-        await instance.#premine({targetBalance})
+        await instance.#createRandomAccount()
+        // await instance.#premine({targetBalance})
         return instance;
     }
 
