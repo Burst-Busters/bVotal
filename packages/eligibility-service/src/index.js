@@ -1,19 +1,14 @@
-const polka = require('polka')
-const {middlewares} = require('./middlewares')
-const {register, showEligibles} = require('./handlers')
-const Database = require("./database");
-const Config = require("./config");
+const { program } = require('commander');
+const {start, bootstrap} = require('./commands')
 
-const api = url => `api/${url}`;
+program
+    .command('start')
+    .description('Starts the Eligibility Service')
+    .action(start)
 
-(async () => {
-    await Database.initialize({reset: Config.IsDebugMode})
-    polka()
-        .use(...middlewares)
-        .post(api('register'), register)
-        .get(api('showEligibles'), showEligibles)
-        .listen(Config.ServicePort, err => {
-            console.log('Listening to localhost:', Config.ServicePort)
-            if (err) console.log('error', err)
-        })
-})()
+program.command('create')
+    .description('Bootstraps a new election campaign')
+    .action(bootstrap)
+
+
+program.parseAsync(process.argv);

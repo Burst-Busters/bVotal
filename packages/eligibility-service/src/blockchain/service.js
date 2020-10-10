@@ -29,5 +29,6 @@ async function sendActivationMessage({recipientPublicKey}) {
 
 
 module.exports = {
-    sendActivationMessage
+    sendActivationMessage,
+    getAccountBalance: BurstApi.account.getAccountBalance
 }

@@ -6,7 +6,8 @@ const {
     getAccountIdFromPublicKey
 } = require("@burstjs/crypto");
 
-const {api, NODE} = require('./config');
+const Config = require('../../config');
+const {getAccountBalance} = require('../../blockchain')
 
 const sleep = time => new Promise((resolve) => {
     setTimeout(resolve, time || 1000);
@@ -42,7 +43,7 @@ class Bootstrapper {
     }
 
     forgeBlock = async () => {
-        let burstService = new BurstService({nodeHost: NODE});
+        let burstService = new BurstService({nodeHost: Config.BurstNode});
         await burstService.send('submitNonce', {
             secretPhrase: this.passphrase,
             nonce: 0
@@ -52,7 +53,7 @@ class Bootstrapper {
     }
 
     getBalanceBurst = async () => {
-        const {balanceNQT} = await api.account.getAccountBalance(this.accountID);
+        const {balanceNQT} = await getAccountBalance(this.accountId);
         return BurstValue.fromPlanck(balanceNQT);
     }
 
