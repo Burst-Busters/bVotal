@@ -1,13 +1,14 @@
 const {BurstValue} = require("@burstjs/util")
 const {getAccountIdFromPublicKey, generateMasterKeys} = require("@burstjs/crypto")
-const {composeApi, AttachmentMessage} = require('@burstjs/core')
+const {composeApi, AttachmentMessage, ApiSettings} = require('@burstjs/core')
 const Config = require('../config')
+const {logger} = require("../logger");
 
-const BurstApi = composeApi({
-    nodeHost: Config.BurstNode
-});
+const BurstApi = composeApi(new ApiSettings(Config.BurstNode))
 
 async function sendActivationMessage({recipientPublicKey}) {
+    logger.debug(`Sending Activation Message to ${recipientPublicKey}`)
+
     const recipientId = getAccountIdFromPublicKey(recipientPublicKey);
     const senderKeys = generateMasterKeys(Config.AuthorityPassphrase);
 

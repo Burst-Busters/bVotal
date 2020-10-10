@@ -12,7 +12,9 @@ const handleError = (fn) => async (req, res) => {
         return await fn(req, res)
     } catch (e) {
         const {output} = e
-        res.end(JSON.stringify(output))
+        const message = JSON.stringify(output)
+        logger.error(message)
+        res.end(message)
     }
 }
 
