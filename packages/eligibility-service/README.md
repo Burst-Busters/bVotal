@@ -9,8 +9,14 @@ or simply
 `yarn start` to start the service
 
 
-> To change the port run as `PORT=4000 yarn dev` 
+> To change the port run as `PORT=4000 yarn dev` (or use .env file) 
 
+
+## Configure
+
+The service is configurable using ENV vars.
+Just copy `.env.example` to `.env` and change in case you need
+The default config is for development mode
 
 ## Run as docker
 
