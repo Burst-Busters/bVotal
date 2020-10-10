@@ -1,5 +1,5 @@
 {
-  "name": "@bvotal/frontend",
+  "name": "@bvotal/react-voting-app",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
