@@ -1,5 +1,6 @@
+const {hashId} = require("@bvotal/common");
 const register = (req, res) => {
-    // TODO: implement here
+    console.log(hashId({id:'test', dob:'12-23-1980'}))
     res.end(`register: ${JSON.stringify(req.body)}`);
 }
 
