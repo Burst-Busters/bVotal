@@ -5,8 +5,8 @@
   "main": "./src/index.js",
   "license": "MIT",
   "scripts": {
-    "start": "node src/index.js",
-    "dev:service": "nodemon src/index.js start"
+    "start": "node src/index.js -- start",
+    "dev:service": "nodemon src/index.js start -- start"
   },
   "dependencies": {
     "@burstjs/core": "^0.5.1",
@@ -22,6 +22,7 @@
     "sqlite3": "^5.0.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.4"
+    "nodemon": "^2.0.4",
+    "pino-pretty": "^4.3.0"
   }
 }

@@ -3,6 +3,7 @@ const {middlewares} = require('../../middlewares')
 const {register, showEligibles} = require('../../handlers')
 const Database = require("../../database");
 const Config = require("../../config");
+const {logger} = require("../../logger");
 
 const api = url => `api/${url}`;
 
@@ -13,8 +14,11 @@ async function start() {
         .post(api('register'), register)
         .get(api('showEligibles'), showEligibles)
         .listen(Config.ServicePort, err => {
-            console.log('Listening to localhost:', Config.ServicePort)
-            if (err) console.log('error', err)
+            if (err) {
+                logger.error(err)
+            } else {
+                logger.info(`Listening to localhost: ${Config.ServicePort}`)
+            }
         })
 }
 

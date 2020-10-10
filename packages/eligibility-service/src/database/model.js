@@ -1,9 +1,11 @@
 const {Sequelize, DataTypes} = require("sequelize");
 const Config = require("../config")
+const {logger} = require("../logger");
 
 const sequelize = new Sequelize({
     dialect: "sqlite",
     storage: Config.DatabasePath,
+    logging: sql => logger.debug(sql)
 });
 
 
