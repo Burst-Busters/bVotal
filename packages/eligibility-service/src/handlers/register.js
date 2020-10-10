@@ -20,7 +20,6 @@ const register = async (req, res) => {
         res.end('Here goes voting options and activation of acc');
         }   
     }
-}
 
 module.exports = {
     register
