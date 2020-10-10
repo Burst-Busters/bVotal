@@ -2,14 +2,27 @@ import React from 'react';
 import './App.css';
 import { Route, Switch, Redirect } from "react-router-dom";
 import StartPage from './pages/start/StartPage';
+import { AppBar, CssBaseline, Toolbar, Typography } from '@material-ui/core';
+import MenuIcon from '@material-ui/icons/Menu';
 function App() {
 
   return (
     <div className="App">
-      <Switch>
-        <Route path="/" exact component={StartPage} />
-        <Route path='/default' render={() => <Redirect to= "/" />} />
-      </Switch>
+      <CssBaseline />
+      <AppBar position="relative">
+        <Toolbar>
+          <MenuIcon />
+          <Typography variant="h6" color="inherit" noWrap>
+            bVote
+          </Typography>
+        </Toolbar>
+      </AppBar>
+      <main>
+        <Switch>
+          <Route path="/" exact component={StartPage} />
+          <Route path='/default' render={() => <Redirect to= "/" />} />
+        </Switch>
+      </main>
     </div>
   );
 }
