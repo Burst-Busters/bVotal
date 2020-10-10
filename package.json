@@ -4,7 +4,7 @@
   "description": "Anonymous, secret, transparent, cheap and scalable voting system based on Burstcoin Blockchain",
   "private": true,
   "scripts": {
-    "dev:frontend": "yarn --cwd packages/frontend start",
+    "dev:frontend": "yarn --cwd packages/react-voting-app start",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "workspaces": [
