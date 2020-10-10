@@ -12,6 +12,8 @@ const Voter = sequelize.define(
     {
         hash: {
             type: DataTypes.STRING,
+            allowNull: false,
+            unique: true
         },
         active: {
             type: DataTypes.BOOLEAN,
@@ -23,7 +25,29 @@ const Voter = sequelize.define(
     }
 );
 
+const Event = sequelize.define(
+    "Event",
+    {
+        name: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            unique: true
+        },
+        activatePass: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            unique: true
+        },
+        votingPass: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            unique: true
+        }
+    }
+);
+
 module.exports = {
     sequelize,
-    Voter
+    Voter,
+    Event
 }
