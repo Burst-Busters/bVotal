@@ -1,7 +1,7 @@
 {
-  "name": "common",
+  "name": "@bvotal/common",
   "version": "1.0.0",
-  "description": "Shared code between packages",
+  "description": "bVotal common lib",
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
