@@ -32,6 +32,12 @@ const useStyles = makeStyles((theme) => ({
   pinInput: {
     marginTop: theme.spacing(6),
   },
+  pinConfirmInput: {
+      marginTop: theme.spacing(6),
+  },
+  pinConfirmLabel: {
+    marginTop: theme.spacing(6),
+},
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
     color: '#fff',
@@ -119,10 +125,10 @@ function CreatePinPage() {
                         }
                     />
                     </FormControl>
-                    <Typography component="p" variant="body2" align="center">
+                    <Typography className={classes.pinConfirmLabel} component="p" variant="body2" align="center">
                         Confirm your PIN by typing it again bellow:
                     </Typography>
-                    <FormControl className={classes.pinInput} variant="outlined">
+                    <FormControl className={classes.pinConfirmInput} variant="outlined">
                     <InputLabel htmlFor="outline-confirm-pin">Confirm PIN</InputLabel>
                     <OutlinedInput
                         id="outline-confirm-pin"
