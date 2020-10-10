@@ -65,8 +65,8 @@ function StartPage() {
                   <List className={classes.root}>
                     <ListItem alignItems="flex-start">
                       <ListItemText 
-                        primary="1. Create your Passphrase" 
-                        secondary="Securely create your account by getting na exclusive passphrase" />
+                        primary="1. Create your Account" 
+                        secondary="Create your secure voting account" />
                     </ListItem>
                     <Divider variant="inset" component="li" />
                     <ListItem alignItems="flex-start">
@@ -77,8 +77,8 @@ function StartPage() {
                     <Divider variant="inset" component="li" />
                     <ListItem alignItems="flex-start">
                       <ListItemText 
-                        primary="3. Add your documents" 
-                        secondary="Proof your identity by providing your doc ID" />
+                        primary="3. Register for voting" 
+                        secondary="And place your vote" />
                     </ListItem>
                   </List>
                 </CardContent>

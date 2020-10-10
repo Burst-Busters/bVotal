@@ -13,10 +13,7 @@ function App() {
       <CssBaseline />
       <AppBar position="relative">
         <Toolbar>
-          <MenuIcon />
-          <Typography variant="h6" color="inherit" noWrap>
-            bVote
-          </Typography>
+          <img style={{maxHeight: 50 }} src="bvotal-logo.png" />
         </Toolbar>
       </AppBar>
       <main>
