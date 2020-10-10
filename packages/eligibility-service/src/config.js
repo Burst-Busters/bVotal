@@ -1,7 +1,10 @@
-const { config:  loadConfig } = require('dotenv')
+const {config: loadConfig} = require('dotenv')
 
 loadConfig()
 
-export const config = {
-    // burstNodeHost: process.env.BURST_NODE,
+module.exports = {
+    ServicePort: process.env.PORT || 3000,
+    IsDebugMode: process.env.NODE_ENV === 'development',
+    BurstNode: process.env.BURST_NODE,
+    DatabasePath: process.env.DATABASE_PATH,
 }

@@ -1,7 +1,7 @@
 const {register} = require('./register')
-const {showAllTEST} = require('./showAllTEST')
+const {showEligibles} = require('./showEligibles')
 
 module.exports = {
     register,
-    showAllTEST
+    showEligibles,
 }
