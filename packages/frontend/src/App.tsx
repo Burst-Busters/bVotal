@@ -2,7 +2,12 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 
+import {hashId} from '@bvotal/common'
+
 function App() {
+
+  const hash = hashId({id:'1244', dob:'12-12-2345'})
+
   return (
     <div className="App">
       <header className="App-header">
@@ -18,6 +23,7 @@ function App() {
         >
           Learn React
         </a>
+        <p>{hash}</p>
       </header>
     </div>
   );
