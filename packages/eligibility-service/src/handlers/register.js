@@ -1,7 +1,17 @@
+const {sendActivationMessage} = require("../blockchain");
 const {Voter} = require("../database/model");
 
+/*
+Incoming message format is
+
+{
+ hash: <hashedId>
+ pub: <Accounts public key>
+}
+
+ */
 const register = async (req, res) => {
-    const hash = req.body;
+    const {hash, pub} = req.body;
     const voter = await Voter.findOne({where: hash});
 
     if (voter === null) {
@@ -15,7 +25,7 @@ const register = async (req, res) => {
         await Voter.update({active: true}, {
             where: hash
         });
-        //function to activate and send funds
+        await sendActivationMessage({recipientPublicKey: pub})
         res.end('Here goes voting options and activation of acc');
         return
     }
