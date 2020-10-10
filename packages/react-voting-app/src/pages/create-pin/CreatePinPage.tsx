@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
-import {FormattedMessage } from 'react-intl';
-import {hashId} from '@bvotal/common'
 import { Backdrop, Box, Button, Card, CardContent, CardMedia, Chip, CircularProgress, Divider, Fab, FormControl, IconButton, Input, InputAdornment, InputLabel, List, ListItem, ListItemText, makeStyles, OutlinedInput, Paper, TextField, Typography } from '@material-ui/core';
-import PhoneIphoneIcon from '@material-ui/icons/PhoneIphone';
+import EditIcon from '@material-ui/icons/Edit';
 import { useHistory } from 'react-router-dom';
 const useStyles = makeStyles((theme) => ({
-  GeneratePassphrasePage: {
+  CreatePinPage: {
     width: 'auto',
     marginLeft: theme.spacing(2),
     marginRight: theme.spacing(2),
@@ -31,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
     textAlign: `left`,
     marginTop: theme.spacing(2),
   },
-  phoneInput: {
+  pinInput: {
     marginTop: theme.spacing(6),
   },
   backdrop: {
@@ -64,84 +62,103 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(2),
   }
 }))
-function GeneratePassphrasePage() {
+function CreatePinPage() {
   const classes = useStyles();
   const history = useHistory();
   const [loading, setLoading] = useState(false);
-  const [passphrase, setPassphrase] = useState<string[]>([]);
-  const handlePhoneChange = (value: string) => console.log(`phone is ${value}`)
-  const handleFabClick = () => history.push(`/create-pin`)
-  const handleGenerateButton = () => {
+  const [pin, setPin] = useState<string>();
+  const [validPin, setValidPin] = useState(false);
+  const [isPinCreated, setIsPinCreated] = useState(false);
+  const handlePinChange = (value: string) => {
+    console.log(`PIN is ${value}`);
+    setPin(value);
+  }
+  const handleConfirmPinChange = (value: string) => {
+      console.log(`Confirm PIN is ${value}`);
+      if (pin === value) {
+          setValidPin(true)
+      }
+  }
+  const handleCreateButton = () => {
       setLoading(true);
       setTimeout(() => {
         setLoading(false);
-        setPassphrase([`example`, `pass`, `phrase`, `with`, `some`, `words`, `2example`, `2pass`, `2phrase`, `2with`, `2some`, `2words`])
+        alert(`OK`);
+        setIsPinCreated(true);
       }, 1000);
   }
 
-  const hash = hashId({id:'1244', dob:'12-12-2345'})
+  const handleFabClick = () => history.push(`/vote`);
+
 
   return (
-    <div className={classes.GeneratePassphrasePage}>
+    <div className={classes.CreatePinPage}>
       <Paper className={classes.paper}>
           <Typography component="h1" variant="h5" align="center">
           <Fab size="medium" disabled color="primary" aria-label="1">
-              1
-            </Fab> Generate your passphrase
+              2
+            </Fab> Create your PIN
           </Typography>
             <Card className={classes.card}>
               <div className={classes.cardDetails}>
                 <CardContent>
                    <Typography component="p" variant="body2" align="center">
-                        Input your phone number and generate a custom passphrase.
+                        Create a 6 digit PIN code that you will use to Vote
                     </Typography>
-                    <FormControl className={classes.phoneInput} variant="outlined">
-                    <InputLabel htmlFor="outline-phone">phone</InputLabel>
+                    <FormControl className={classes.pinInput} variant="outlined">
+                    <InputLabel htmlFor="outline-pin">PIN</InputLabel>
                     <OutlinedInput
-                        id="outline-phone"
+                        id="outline-pin"
                         type={'text'}
-                        onChange={e => handlePhoneChange(e.target.value)}
-                        labelWidth={45}
+                        onChange={e => handlePinChange(e.target.value)}
+                        labelWidth={30}
                         endAdornment={
                         <InputAdornment position="end">
-                            <PhoneIphoneIcon />
+                            <EditIcon />
+                        </InputAdornment>
+                        }
+                    />
+                    </FormControl>
+                    <Typography component="p" variant="body2" align="center">
+                        Confirm your PIN by typing it again bellow:
+                    </Typography>
+                    <FormControl className={classes.pinInput} variant="outlined">
+                    <InputLabel htmlFor="outline-confirm-pin">Confirm PIN</InputLabel>
+                    <OutlinedInput
+                        id="outline-confirm-pin"
+                        type={'text'}
+                        onChange={e => handleConfirmPinChange(e.target.value)}
+                        labelWidth={90}
+                        endAdornment={
+                        <InputAdornment position="end">
+                            <EditIcon />
                         </InputAdornment>
                         }
                     />
                     </FormControl>
                     <FormControl className={classes.buttonInput}>
-                        <Button disabled={passphrase.length > 0} onClick={handleGenerateButton} variant="outlined" color="primary">
-                            Generate
+                        <Button disabled={!validPin} onClick={handleCreateButton} variant="outlined" color="primary">
+                            Save PIN
                         </Button>
                     </FormControl>
                     <Backdrop className={classes.backdrop} open={loading}>
                         <CircularProgress color="inherit" />
                     </Backdrop>
-                    <Box className={classes.passphraseStats} component="div" m={1}>
-                        {
-                            passphrase.map(word => (
-                                <Chip
-                                    className={classes.chip} 
-                                    key={word}
-                                    label={word}
-                                />
-                            ))
-                        }
-                    </Box>
                 </CardContent>
               </div>
             </Card>
             <Fab 
+                disabled={!isPinCreated}
                 onClick={handleFabClick}
-                disabled={passphrase.length < 12} 
-                className={classes.fab} size="large" 
-                color="secondary" 
+                className={classes.fab}
+                size="large"
+                color="secondary"
                 aria-label="go">
-              Next
+                Vote!
             </Fab>
       </Paper>
     </div>
   );
 }
 
-export default GeneratePassphrasePage;
+export default CreatePinPage;
