@@ -4,10 +4,13 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import 'fontsource-roboto';
+import { IntlProvider } from 'react-intl';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <IntlProvider locale='en'>
+      <App />
+    </IntlProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
