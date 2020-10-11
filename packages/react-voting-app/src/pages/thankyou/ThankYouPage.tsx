@@ -107,21 +107,13 @@ function ThankYouPage() {
             </CardActionArea>
             <CardActions>
                 <Button size="small" color="primary">
-                Share
+                    Print
                 </Button>
                 <Button size="small" color="primary">
-                Learn More
+                    E-Mail
                 </Button>
             </CardActions>
             </Card>
-            <Fab 
-                onClick={handleFabClick}
-                className={classes.fab}
-                size="large"
-                color="secondary"
-                aria-label="go">
-                Vote!
-            </Fab>
       </Paper>
     </div>
   );
