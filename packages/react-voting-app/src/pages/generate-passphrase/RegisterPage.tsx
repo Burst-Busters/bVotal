@@ -18,6 +18,7 @@ import {useHistory} from 'react-router-dom';
 import DateSelect from '../../components/DateSelect/DateSelect';
 import RegisterConfirmationDialog from '../../components/register-confirmation/RegisterConfirmationDialog';
 import {Security} from '../../services';
+import { formatDateToBurst } from '../../utils';
 
 const useStyles = makeStyles((theme) => ({
     RegisterPage: {
@@ -96,7 +97,8 @@ function RegisterPage() {
         state: {passphrase, hashId},
     })
     const onChangedDate = (dateString: string) => {
-        setChosenDate(dateString);
+        setChosenDate(formatDateToBurst(dateString));
+        console.log(formatDateToBurst(dateString));
     }
     const handleConfirm = async () => {
         try {
@@ -123,33 +125,42 @@ function RegisterPage() {
                 </Typography>
                 <Card className={classes.card}>
                     <div className={classes.cardDetails}>
-                        <CardContent>
-                            <Typography component="p" variant="body2" align="center">
-                                Input your date of birth and document number to get started:
-                            </Typography>
-                            <DateSelect onChange={onChangedDate}/>
-                            <FormControl className={classes.docInput} variant="outlined">
-                                <InputLabel htmlFor="outline-doc">National Identification Number</InputLabel>
-                                <OutlinedInput
-                                    id="outline-doc"
-                                    type={'text'}
-                                    onChange={e => handleDocChange(e.target.value)}
-                                    labelWidth={225}
-                                    endAdornment={
-                                        <InputAdornment position="end">
-                                            <AssignmentIndIcon/>
-                                        </InputAdornment>
-                                    }
-                                />
-                            </FormControl>
-                            <FormControl className={classes.buttonInput}>
-                                <RegisterConfirmationDialog onConfirm={handleConfirm} dateString={chosenDate}
-                                                            document={document}/>
-                            </FormControl>
-                            <Backdrop className={classes.backdrop} open={loading}>
-                                <CircularProgress color="inherit"/>
-                            </Backdrop>
-                        </CardContent>
+                        { !passphrase &&
+                            <CardContent>
+                                <Typography component="p" variant="body2" align="center">
+                                    Input your date of birth and document number to get started:
+                                </Typography>
+                                <DateSelect onChange={onChangedDate}/>
+                                <FormControl className={classes.docInput} variant="outlined">
+                                    <InputLabel htmlFor="outline-doc">National Identification Number</InputLabel>
+                                    <OutlinedInput
+                                        id="outline-doc"
+                                        type={'text'}
+                                        onChange={e => handleDocChange(e.target.value)}
+                                        labelWidth={225}
+                                        endAdornment={
+                                            <InputAdornment position="end">
+                                                <AssignmentIndIcon/>
+                                            </InputAdornment>
+                                        }
+                                    />
+                                </FormControl>
+                                <FormControl className={classes.buttonInput}>
+                                    <RegisterConfirmationDialog onConfirm={handleConfirm} dateString={chosenDate}
+                                                                document={document}/>
+                                </FormControl>
+                                <Backdrop className={classes.backdrop} open={loading}>
+                                    <CircularProgress color="inherit"/>
+                                </Backdrop>
+                            </CardContent>
+                        }
+                        { !!passphrase &&
+                            <CardContent>
+                                <Typography component="p" variant="body2" align="center">
+                                    Thank you. Please click in the 'Next' button bellow to proceed.
+                                </Typography>
+                            </CardContent>
+                        }
                     </div>
                 </Card>
                 <Fab
