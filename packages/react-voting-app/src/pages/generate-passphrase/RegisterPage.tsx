@@ -3,6 +3,7 @@ import { Backdrop, Box, Button, Card, CardContent, Chip, CircularProgress, Fab, 
 import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import { useHistory } from 'react-router-dom';
 import DateSelect from '../../components/DateSelect/DateSelect';
+import RegisterConfirmationDialog from '../../components/register-confirmation/RegisterConfirmationDialog';
 const useStyles = makeStyles((theme) => ({
   RegisterPage: {
     width: 'auto',
@@ -68,13 +69,15 @@ function RegisterPage() {
   const classes = useStyles();
   const history = useHistory();
   const [loading, setLoading] = useState(false);
+  const [chosenDate, setChosenDate] = useState<string>();
+  const [document, setDocument] = useState<string>();
   const [passphrase, setPassphrase] = useState<string[]>([]);
-  const handledocChange = (value: string) => console.log(`doc is ${value}`)
+  const handleDocChange = (value: string) => setDocument(value);
   const handleFabClick = () => history.push(`/create-pin`)
   const onChangedDate = (dateString: string) => {
-    console.log(`changed date ${dateString}`);
+    setChosenDate(dateString);
   }
-  const handleGenerateButton = () => {
+  const handleConfirm = () => {
       setLoading(true);
       setTimeout(() => {
         setLoading(false);
@@ -103,8 +106,8 @@ function RegisterPage() {
                       <OutlinedInput
                           id="outline-doc"
                           type={'text'}
-                          onChange={e => handledocChange(e.target.value)}
-                          labelWidth={145}
+                          onChange={e => handleDocChange(e.target.value)}
+                          labelWidth={225}
                           endAdornment={
                           <InputAdornment position="end">
                               <AssignmentIndIcon />
@@ -113,9 +116,7 @@ function RegisterPage() {
                       />
                     </FormControl>
                     <FormControl className={classes.buttonInput}>
-                        <Button disabled={passphrase.length > 0} onClick={handleGenerateButton} variant="outlined" color="primary">
-                            Generate
-                        </Button>
+                      <RegisterConfirmationDialog onConfirm={handleConfirm} dateString={chosenDate} document={document} />
                     </FormControl>
                     <Backdrop className={classes.backdrop} open={loading}>
                         <CircularProgress color="inherit" />

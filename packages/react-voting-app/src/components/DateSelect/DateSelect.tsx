@@ -66,6 +66,8 @@ function DateSelect(props: DateSelectProps) {
         if (validDate) {
             const dateString = getDateString(day, month, year);
             onChange(dateString);
+        } else {
+            onChange('');
         }
     }, [validDate])
     return (
