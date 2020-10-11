@@ -28,8 +28,11 @@ const register = async (req, res) => {
         throw Boom.notFound('No campaign found')
     }
 
-    const {activationPassphrase, options, votingPassphrase} = campaigns[0].dataValues
+    const {activationPassphrase, options, votingPassphrase, active} = campaigns[0].dataValues
 
+    if(!active){
+        throw Boom.badRequest('Voting finished')
+    }
 
     await sendActivationMessage({
         recipientPublicKey,
