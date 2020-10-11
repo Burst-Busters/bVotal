@@ -85,7 +85,7 @@ export const Eligibility = {
             interval = setInterval(() => {
                 checkForActivationMessage(publicKey);
                 if(Eligibility.getActivationState() === ActivationState.Activated){
-                    // TODO: send custom event
+                    window.dispatchEvent( new CustomEvent('@bvotal/activated'))
                 }
             }, 30 * Seconds)
         })
