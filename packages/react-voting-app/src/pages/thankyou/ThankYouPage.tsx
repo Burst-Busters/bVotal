@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
-import { Avatar, Backdrop, Box, Button, Card, CardActionArea, CardActions, CardContent, CardMedia, Checkbox, Chip, CircularProgress, Divider, Fab, FormControl, IconButton, Input, InputAdornment, InputLabel, List, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText, makeStyles, OutlinedInput, Paper, TextField, Typography } from '@material-ui/core';
-import EditIcon from '@material-ui/icons/Edit';
-import { useHistory } from 'react-router-dom';
+import React from 'react';
+import { Button, Card, CardActionArea, CardActions, CardContent, makeStyles, Paper, Typography } from '@material-ui/core';
+import { Link } from 'react-router-dom';
 const useStyles = makeStyles((theme) => ({
   ThankYouPage: {
     width: 'auto',
@@ -59,32 +58,9 @@ export type VotingOption = {
     description: string;
 }
 
-const VotingOptions: VotingOption[] = [
-    {key: 1, title: "Option 1", description: "This is option 1 - best candidate ever"},
-    {key: 2, title: "Option 2", description: "This one saves the nation"},
-    {key: 3, title: "Option 3", description: "This egomaniac politician wants your money"},
-    {key: 4, title: "Option 4", description: "This guy is against Option 1"},
-]
 
 function ThankYouPage() {
   const classes = useStyles();
-  const history = useHistory();
-  const [loading, setLoading] = useState(false);
-  const handleFabClick = () => alert(`voted!`);
-  const [checked, setChecked] = React.useState<VotingOption[]>([]);
-
-  const handleToggle = (value: VotingOption) => () => {
-    const currentIndex = checked.indexOf(value);
-    const newChecked = [...checked];
-
-    if (currentIndex === -1) {
-      newChecked.push(value);
-    } else {
-      newChecked.splice(currentIndex, 1);
-    }
-
-    setChecked(newChecked);
-  };
 
   return (
     <div className={classes.ThankYouPage}>
@@ -93,18 +69,20 @@ function ThankYouPage() {
             Thank you!
           </Typography>
           <Card className={classes.root}>
-            <CardActionArea>
-                <CardContent>
-                    <Typography gutterBottom variant="h5" component="h2">
-                        Your vote has been computed.
-                    </Typography>
-                    <Typography variant="body2" color="textSecondary" component="p">
-                        Thank you for your vote. It has been sucessfully computed.
-                        <br />
-                        You can print a receipt if you want.
-                    </Typography>
-                </CardContent>
-            </CardActionArea>
+            <Link to="/">
+              <CardActionArea>
+                  <CardContent>
+                      <Typography gutterBottom variant="h5" component="h2">
+                          Your vote has been computed.
+                      </Typography>
+                      <Typography variant="body2" color="textSecondary" component="p">
+                          Thank you for your vote. It has been sucessfully computed.
+                          <br />
+                          You can print a receipt if you want.
+                      </Typography>
+                  </CardContent>
+              </CardActionArea>
+            </Link>
             <CardActions>
                 <Button size="small" color="primary">
                     Print
