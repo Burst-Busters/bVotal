@@ -210,7 +210,7 @@ function CreatePinPage(props: CreatePinPageProps) {
                     size="large"
                     color="secondary"
                     aria-label="go">
-                    Register
+                    Next
                 </Fab>
             </Paper>
         </div>
