@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { hashId } from '@bvotal/common';
-
+import { generateMasterKeys } from '@burstjs/crypto';
 const eaBaseUrl = `http://localhost:3000/api`;
 
 const eaApi = axios.create({
@@ -8,6 +8,7 @@ const eaApi = axios.create({
 });
 
 const api = {
+    generateMasterKeys,
     getHashId: (document: string, dateString: string) => {
         return hashId({id: document, dob: dateString});
     },
