@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { Backdrop, Box, Button, Card, CardContent, Chip, CircularProgress, Fab, FormControl, InputAdornment, InputLabel, makeStyles, OutlinedInput, Paper, Typography } from '@material-ui/core';
+import { Backdrop, Box, Card, CardContent, Chip, CircularProgress, Fab, FormControl, InputAdornment, InputLabel, makeStyles, OutlinedInput, Paper, Typography } from '@material-ui/core';
 import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import { useHistory } from 'react-router-dom';
 import DateSelect from '../../components/DateSelect/DateSelect';
 import RegisterConfirmationDialog from '../../components/register-confirmation/RegisterConfirmationDialog';
+import api from '../../services/api';
+
 const useStyles = makeStyles((theme) => ({
   RegisterPage: {
     width: 'auto',
@@ -79,6 +81,8 @@ function RegisterPage() {
   }
   const handleConfirm = () => {
       setLoading(true);
+      const hashId = api.getHashId(document!, chosenDate!);
+      console.log(`hashId ${hashId}`);
       setTimeout(() => {
         setLoading(false);
         setPassphrase([`example`, `pass`, `phrase`, `with`, `some`, `words`, `2example`, `2pass`, `2phrase`, `2with`, `2some`, `2words`])

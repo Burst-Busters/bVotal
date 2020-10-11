@@ -52,10 +52,10 @@ export default function RegisterConfirmationDialog(props: RegisterConfirmationDi
             </DialogContent>
             <DialogActions>
             <Button onClick={handleClose} color="primary">
-                Disagree
+                Cancel
             </Button>
             <Button onClick={handleConfirm} color="primary" autoFocus>
-                Agree
+                I Agree
             </Button>
             </DialogActions>
         </Dialog>
