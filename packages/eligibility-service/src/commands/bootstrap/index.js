@@ -1,17 +1,23 @@
+const {onShutdown} = require("node-graceful-shutdown");
 const {Bootstrapper} = require("./bootstrapper");
+const Context = require('./context')
+
+onShutdown("bootstrapper", async function () {
+    await Context.Database.close()
+});
 
 async function bootstrap({name}) {
-
-    // TODO: using inquirer
+    try{
 
     const votingOptions = []
-    const voterCount = 100
-    const voterTargetAmount = 0.2
 
     return await Bootstrapper.run({
         campaignName: name,
-        targetBalance: voterCount * voterTargetAmount,
+        context: Context
     });
+    }catch(e){
+        Context.Logger.error(e)
+    }
 }
 
 module.exports = {

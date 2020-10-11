@@ -1,6 +1,3 @@
-const {sendActivationMessage, getAccountBalance} = require("./service");
+const service = require("./service");
 
-module.exports = {
-    sendActivationMessage,
-    getAccountBalance
-}
+module.exports = service
