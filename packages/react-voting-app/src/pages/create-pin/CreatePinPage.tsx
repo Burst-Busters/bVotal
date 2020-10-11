@@ -167,7 +167,7 @@ function CreatePinPage(props: CreatePinPageProps) {
                 <Card className={classes.card}>
                     <div className={classes.cardDetails}>
                         {
-                            isEligible == IS_ELIGIBLE_ENUM.NO &&
+                            isEligible === IS_ELIGIBLE_ENUM.NO &&
                             <CardContent>
                                 <Typography component="h2" variant="h5" align="center">
                                     Sorry, you are not eligible to vote now.
