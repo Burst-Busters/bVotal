@@ -1,4 +1,5 @@
 const polka = require('polka')
+const {onShutdown} = require('node-graceful-shutdown')
 const {middlewares} = require('../../middlewares')
 const {register, showEligibles} = require('../../handlers')
 const Database = require("../../database");
@@ -12,23 +13,36 @@ const handleError = (fn) => async (req, res) => {
         return await fn(req, res)
     } catch (e) {
         const {output} = e
-        res.end(JSON.stringify(output))
+        const message = JSON.stringify(output)
+        logger.error(message)
+        res.end(message)
     }
 }
 
+const httpServer = polka()
+    .use(...middlewares)
+    .post(api('register'), handleError(register))
+    .get(api('showEligibles'), handleError(showEligibles))
+
+onShutdown("service", async function () {
+    await httpServer.close()
+    await Database.close()
+});
+
 async function start() {
-    await Database.initialize({reset: Config.IsDebugMode})
-    polka()
-        .use(...middlewares)
-        .post(api('register'), handleError(register))
-        .get(api('showEligibles'), handleError(showEligibles))
-        .listen(Config.ServicePort, err => {
+    try {
+        await Database.open()
+        httpServer.listen(Config.ServicePort, err => {
             if (err) {
                 logger.error(err)
             } else {
                 logger.info(`Listening to localhost: ${Config.ServicePort}`)
             }
         })
+    } catch (e) {
+        logger.error(`Could not start service: ${e}`)
+        process.exit(-1)
+    }
 }
 
 module.exports = {

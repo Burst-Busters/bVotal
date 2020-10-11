@@ -2,11 +2,12 @@ const { program } = require('commander');
 const {start, bootstrap} = require('./commands')
 
 program
-    .command('start')
+    .command('start [options]')
     .description('Starts the Eligibility Service')
     .action(start)
 
-program.command('new <name> ')
+// TODO more args here
+program.command('bootstrap <name>')
     .description('Bootstraps a new election campaign')
     .action(async name => bootstrap({name}))
 

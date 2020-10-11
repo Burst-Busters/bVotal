@@ -1,5 +1,4 @@
 const crypto = require('crypto')
-const {BurstService} = require("@burstjs/core");
 const {BurstValue} = require("@burstjs/util");
 const {
     PassPhraseGenerator,
@@ -7,74 +6,66 @@ const {
     getAccountIdFromPublicKey
 } = require("@burstjs/crypto");
 
-const Config = require('../../config');
+const {EligibleVoters} = require("./mockedEligibleVoters");
 const {getAccountBalance} = require('../../blockchain')
 
-const sleep = time => new Promise((resolve) => {
-    setTimeout(resolve, time || 1000);
-});
-
 class Bootstrapper {
-    constructor({campaignName, targetBalance}) {
+    constructor({campaignName, context}) {
         this._campaignName = campaignName;
-        this._targetBalance = BurstValue.fromBurst(targetBalance)
+        this._context = context
     }
 
-    async #createRandomAccount() {
-        const seed = crypto.randomBytes(64)
+    static async #createRandomPassphrase() {
+        const seed = crypto.randomBytes(256)
         const generator = new PassPhraseGenerator();
         const words = await generator.generatePassPhrase(Array.from(seed));
-        this._passphrase = words.join(" ")
-        const keys = generateMasterKeys(this._passphrase);
-        this._publicKey = keys.publicKey;
-        this._accountID = getAccountIdFromPublicKey(keys.publicKey);
+        return words.join(" ")
     }
 
-    async #premine() {
+    async #premine({passphrase, minimumElectionFund}) {
+        const {Logger} = this._context
+        Logger.info(`Premining campaign fund...Goal: ${minimumElectionFund}`)
+        const {publicKey} = generateMasterKeys(passphrase)
+        const accountId = getAccountIdFromPublicKey(publicKey);
         let currentBalance = BurstValue.fromBurst(0)
-        while (currentBalance.lessOrEqual(this._targetBalance)) {
-            await this.forgeBlock()
-            currentBalance = await this.getBalanceBurst()
+        while (currentBalance.lessOrEqual(minimumElectionFund)) {
+            await this._context.Blockchain.forgeBlock({secretPhrase: passphrase})
+            const {balanceNQT} = await getAccountBalance(accountId);
+            currentBalance = BurstValue.fromPlanck(balanceNQT);
+            Logger.debug(`minted: ${currentBalance}`)
         }
     }
 
-    static async run({campaignName, targetBalance}) {
-        const instance = new Bootstrapper({campaignName, targetBalance})
-        await instance.#createRandomAccount()
-        // await instance.#premine({targetBalance})
-        return instance;
-    }
-
-    forgeBlock = async () => {
-        let burstService = new BurstService({nodeHost: Config.BurstNode});
-        await burstService.send('submitNonce', {
-            secretPhrase: this.passphrase,
-            nonce: 0
+    async #initializeCampaignData({activationPassphrase, votingPassphrase}) {
+        const {Database, Logger} = this._context
+        await Database.open()
+        await Database.reset()
+        Logger.info(`Creating campaign data for: '${this._campaignName}'`)
+        await Database.Campaign.create({
+            name: this._campaignName,
+            activationPassphrase,
+            votingPassphrase
         })
-
-        await sleep(500)
+        Logger.info(`Loading eligible voters...`)
+        await Database.EligibleVoter.bulkCreate(EligibleVoters, {individualHooks: true})
+        Logger.info(`Loaded ${numberVoters} eligible voters`)
+        const numberVoters = await Database.EligibleVoter.count();
+        return numberVoters
     }
 
-    getBalanceBurst = async () => {
-        const {balanceNQT} = await getAccountBalance(this.accountId);
-        return BurstValue.fromPlanck(balanceNQT);
+    async run() {
+        const {Logger} = this._context
+        Logger.info(`Bootstrapping...`)
+        const activationPassphrase = await Bootstrapper.#createRandomPassphrase()
+        const votingPassphrase = await Bootstrapper.#createRandomPassphrase()
+        const numberVoters = this.#initializeCampaignData({activationPassphrase, votingPassphrase})
+        const minimumElectionFund = BurstValue.fromBurst(numberVoters * 0.25);
+        await this.#premine({passphrase: activationPassphrase, minimumElectionFund})
     }
 
-    get passphrase() {
-        return this._passphrase
-    }
-
-    get campaignName() {
-        return this._campaignName;
-    }
-
-    get accountId() {
-        return getAccountIdFromPublicKey(this.publicKey)
-    }
-
-    get publicKey() {
-        const keys = generateMasterKeys(this._passphrase);
-        return keys.publicKey;
+    static async run({campaignName, context}) {
+        const instance = new Bootstrapper({campaignName, context})
+        await instance.run()
     }
 }
 
