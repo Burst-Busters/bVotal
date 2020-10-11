@@ -123,7 +123,7 @@ function RegisterPage() {
 
     const handleDocChange = (value: string) => setDocument(value);
     const handleFabClick = async () => {
-        if(isEligible === IS_ELIGIBLE_ENUM.YES){
+        if (isEligible === IS_ELIGIBLE_ENUM.YES) {
             history.push({
                 pathname: `/create-pin`,
                 state: {passphrase, hashId},
@@ -168,13 +168,14 @@ function RegisterPage() {
                                     href="/"
                                     color="secondary"
                                     className={classes.backButton}
-                                    startIcon={<AssignmentReturnIcon />}
+                                    startIcon={<AssignmentReturnIcon/>}
                                 >
                                     Go Back
                                 </Button>
                             </CardContent>
                         }
-                        { isEligible === IS_ELIGIBLE_ENUM.PENDING &&
+                        {
+                            isEligible === IS_ELIGIBLE_ENUM.PENDING &&
                             <CardContent>
                                 <Typography component="p" variant="body2" align="center">
                                     Input your date of birth and document number to get started:
@@ -204,6 +205,17 @@ function RegisterPage() {
                                     </Typography>
                                     <CircularProgress color="inherit"/>
                                 </Backdrop>
+                            </CardContent>
+                        }
+                        {
+                            isEligible === IS_ELIGIBLE_ENUM.YES &&
+                            <CardContent>
+                                <Typography component="h2" variant="h5" align="center">
+                                    You are eligible for voting.
+                                </Typography>
+                                <Typography component="p" variant="body2" align="center">
+                                    Please proceed to next step.
+                                </Typography>
                             </CardContent>
                         }
                     </div>
