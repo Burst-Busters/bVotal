@@ -1,6 +1,7 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {
-    Backdrop, Button,
+    Backdrop,
+    Button,
     Card,
     CardContent,
     CircularProgress,
@@ -22,6 +23,14 @@ import {Security} from '../../services';
 import {formatDateToBurst} from '../../utils';
 import {IS_ELIGIBLE_ENUM} from "../../typings";
 import AssignmentReturnIcon from "@material-ui/icons/AssignmentReturn";
+
+
+function sleep(time: number): Promise<void> {
+    return new Promise((resolve) => {
+        setTimeout(resolve, time || 1000);
+    });
+}
+
 
 const useStyles = makeStyles((theme) => ({
     RegisterPage: {
@@ -98,18 +107,10 @@ function RegisterPage() {
     const [hashId, setHashId] = useState<string>('');
     const [isEligible, setIsEligible] = useState<IS_ELIGIBLE_ENUM>(IS_ELIGIBLE_ENUM.PENDING);
 
-    useEffect(() => {
-        if(isEligible === IS_ELIGIBLE_ENUM.YES){
-            history.push({
-                pathname: `/create-pin`,
-                state: {passphrase, hashId},
-            })
-        }
-    }, [isEligible])
-
     const doRegister = async (hashId: string, publicKey: string) => {
         try {
             setLoading(true)
+            await sleep(2500) // fake delay
             await Services.Eligibility.register(hashId, publicKey);
             setIsEligible(IS_ELIGIBLE_ENUM.YES)
             return
@@ -122,9 +123,12 @@ function RegisterPage() {
 
     const handleDocChange = (value: string) => setDocument(value);
     const handleFabClick = async () => {
-        const {publicKey} = Services.Security.generateKeys(passphrase);
-        await doRegister(hashId, publicKey)
-
+        if(isEligible === IS_ELIGIBLE_ENUM.YES){
+            history.push({
+                pathname: `/create-pin`,
+                state: {passphrase, hashId},
+            })
+        }
     }
     const onChangedDate = (dateString: string) => {
         setChosenDate(formatDateToBurst(dateString));
@@ -135,6 +139,8 @@ function RegisterPage() {
         const phrase = await Security.generatePassphrase(newHashId);
         setHashId(newHashId);
         setPassphrase(phrase);
+        const {publicKey} = Services.Security.generateKeys(passphrase);
+        await doRegister(newHashId, publicKey)
     }
 
     return (
@@ -193,6 +199,9 @@ function RegisterPage() {
                                                                 document={document}/>
                                 </FormControl>
                                 <Backdrop className={classes.backdrop} open={loading}>
+                                    <Typography variant="h2" align="center">
+                                        Checking Eligibility
+                                    </Typography>
                                     <CircularProgress color="inherit"/>
                                 </Backdrop>
                             </CardContent>
@@ -201,7 +210,7 @@ function RegisterPage() {
                 </Card>
                 <Fab
                     onClick={handleFabClick}
-                    disabled={passphrase.length === 0}
+                    disabled={isEligible !== IS_ELIGIBLE_ENUM.YES}
                     className={classes.fab} size="large"
                     color="secondary"
                     aria-label="go">
