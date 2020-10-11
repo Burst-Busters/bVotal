@@ -19,6 +19,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import {useHistory} from 'react-router-dom';
 import * as Services from "../../services"
 import {IS_ELIGIBLE_ENUM, VotingOption} from "../../typings";
+import {Eligibility} from "../../services";
 
 const useStyles = makeStyles((theme) => ({
     CreatePinPage: {
@@ -105,7 +106,7 @@ function CreatePinPage(props: CreatePinPageProps) {
     const passphrase = location.state.passphrase;
     const hashId = location.state.hashId;
     const [loading, setLoading] = useState(false);
-    const [isEligible, setIsEligible] = useState(IS_ELIGIBLE_ENUM.FETCHING);
+    const [isEligible, setIsEligible] = useState<IS_ELIGIBLE_ENUM>(IS_ELIGIBLE_ENUM.FETCHING);
     const [pin, setPin] = useState<string>();
     const [publicKey, setPublicKey] = useState<string>();
     const [validPin, setValidPin] = useState(false);
@@ -117,6 +118,7 @@ function CreatePinPage(props: CreatePinPageProps) {
             setLoading(true)
             await Services.Eligibility.register(hashId, publicKey);
             setIsEligible(IS_ELIGIBLE_ENUM.YES);
+            Eligibility.waitForActivationMessage(publicKey)
         } catch (e) {
             console.error(e)
             setIsEligible(IS_ELIGIBLE_ENUM.NO);
