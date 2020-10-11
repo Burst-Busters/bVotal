@@ -1,18 +1,12 @@
-import axios from 'axios';
 import { hashId } from '@bvotal/common';
-import { generateMasterKeys, PassPhraseGenerator, encryptAES, decryptAES } from '@burstjs/crypto';
-const eaBaseUrl = `http://localhost:3001/api`;
-
-const eaApi = axios.create({
-    baseURL: eaBaseUrl,
-});
+import { generateMasterKeys, PassPhraseGenerator, encryptAES, decryptAES, Keys } from '@burstjs/crypto';
 
 const StorageKeys = {
     Passphrase: 'p'
 }
 
-const api = {
-    getMasterKeys: (passphrase: string) => {
+export const Security = {
+    generateKeys: (passphrase: string) : Keys => {
         return generateMasterKeys(passphrase);
     },
     generatePassphrase: async (hashId: string) => {
@@ -38,18 +32,5 @@ const api = {
     getHashId: (document: string, dateString: string) => {
         return hashId({id: document, dob: dateString});
     },
-    register: (hashId: string, publicKey: string): Promise<ActivationMessage> => {
-        return eaApi.post('/register', {
-            hashId,
-            pub: publicKey
-        })
-    },
 }
 
-export type VotingOption = { key: string, title: string; desc: string };
-export type VotingAddress = string;
-export type ActivationMessage = {
-    vopts: VotingOption[],
-    vaddrs: VotingAddress
-}
-export default api;
