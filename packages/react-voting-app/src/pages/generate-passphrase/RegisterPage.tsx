@@ -71,7 +71,9 @@ function RegisterPage() {
   const [passphrase, setPassphrase] = useState<string[]>([]);
   const handledocChange = (value: string) => console.log(`doc is ${value}`)
   const handleFabClick = () => history.push(`/create-pin`)
-  
+  const onChangedDate = (dateString: string) => {
+    console.log(`changed date ${dateString}`);
+  }
   const handleGenerateButton = () => {
       setLoading(true);
       setTimeout(() => {
@@ -95,7 +97,7 @@ function RegisterPage() {
                    <Typography component="p" variant="body2" align="center">
                         Input your date of birth and document number to get started:
                     </Typography>
-                    <DateSelect />
+                    <DateSelect onChange={onChangedDate} />
                     <FormControl className={classes.docInput} variant="outlined">
                       <InputLabel htmlFor="outline-doc">National Identification Number</InputLabel>
                       <OutlinedInput
