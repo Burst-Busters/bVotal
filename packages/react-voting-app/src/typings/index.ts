@@ -14,7 +14,7 @@ export enum ActivationState {
 }
 
 export enum IS_ELIGIBLE_ENUM {
-    FETCHING,
+    PENDING,
     YES,
     NO
 }
