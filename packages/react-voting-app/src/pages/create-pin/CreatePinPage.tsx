@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Backdrop, Button, Card, CardContent, CircularProgress, Fab, FormControl, InputAdornment, InputLabel, makeStyles, OutlinedInput, Paper, Typography } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import { useHistory } from 'react-router-dom';
+import api, { VotingOption } from '../../services/api';
+
 const useStyles = makeStyles((theme) => ({
   CreatePinPage: {
     width: 'auto',
@@ -68,13 +70,48 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(2),
   }
 }))
-function CreatePinPage() {
+export type CreatePinPageProps = { 
+  location: { 
+    state: {
+      passphrase: string[];
+      hashId: string;
+    } 
+  }
+}
+function CreatePinPage(props: CreatePinPageProps) {
   const classes = useStyles();
+  const { location } = props;
   const history = useHistory();
+  const passphrase = location.state.passphrase;
+  const hashId = location.state.hashId;
   const [loading, setLoading] = useState(false);
   const [pin, setPin] = useState<string>();
+  const [publicKey, setPublicKey] = useState<string>();
   const [validPin, setValidPin] = useState(false);
+  const [votingOptions, setVotingOptions] = useState<VotingOption[]>();
+  const [votingAddress, setVotingAddress] = useState<string>();
   const [isPinCreated, setIsPinCreated] = useState(false);
+
+  const doRegister = async (hashId: string, publicKey: string) => {
+    const activationMessage = await api.register(hashId, publicKey);
+    console.log('registerResponse ', activationMessage);
+    setVotingOptions(activationMessage.vopts);
+    setVotingAddress(activationMessage.vaddrs);
+  }
+
+  useEffect(() => {
+    console.log(`the passphrase is `, passphrase);
+    const certificates = api.getMasterKeys(passphrase);
+    setPublicKey(certificates.publicKey);
+    console.log('Got certificates! ', certificates);
+  }, [])
+
+  useEffect(() => {
+    if (!hashId || !publicKey) return;
+  
+    doRegister(hashId, publicKey);
+  }, [publicKey]);
+
   const handlePinChange = (value: string) => {
     console.log(`PIN is ${value}`);
     setPin(value);
@@ -94,7 +131,19 @@ function CreatePinPage() {
       }, 1000);
   }
 
-  const handleFabClick = () => history.push(`/vote`);
+  const handleFabClick = () => {
+    if (!passphrase || !pin) return;
+
+    const encripted = api.encriptPassphrase(passphrase, pin);
+    window.localStorage.setItem('encriptPassphrase', encripted);
+    history.push({
+      pathname: `/vote`,
+      state: {
+        votingOptions,
+        votingAddress,
+      }
+    });
+  }
 
 
   return (
@@ -109,7 +158,7 @@ function CreatePinPage() {
               <div className={classes.cardDetails}>
                 <CardContent>
                    <Typography component="p" variant="body2" align="center">
-                        Create a 6 digit PIN code that you will use to Vote
+                        Create a 5 digit PIN code that you will use to Vote
                     </Typography>
                     <FormControl className={classes.pinInput} variant="outlined">
                     <InputLabel htmlFor="outline-pin">PIN</InputLabel>

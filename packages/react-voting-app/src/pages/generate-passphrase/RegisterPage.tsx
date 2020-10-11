@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
-import { Backdrop, Box, Button, Card, CardContent, Chip, CircularProgress, Fab, FormControl, InputAdornment, InputLabel, makeStyles, OutlinedInput, Paper, Typography } from '@material-ui/core';
+import { Backdrop, Box, Card, CardContent, Chip, CircularProgress, Fab, FormControl, InputAdornment, InputLabel, makeStyles, OutlinedInput, Paper, Typography } from '@material-ui/core';
 import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import { useHistory } from 'react-router-dom';
 import DateSelect from '../../components/DateSelect/DateSelect';
+import RegisterConfirmationDialog from '../../components/register-confirmation/RegisterConfirmationDialog';
+import api from '../../services/api';
+
 const useStyles = makeStyles((theme) => ({
   RegisterPage: {
     width: 'auto',
@@ -68,20 +71,33 @@ function RegisterPage() {
   const classes = useStyles();
   const history = useHistory();
   const [loading, setLoading] = useState(false);
+  const [chosenDate, setChosenDate] = useState<string>();
+  const [document, setDocument] = useState<string>();
   const [passphrase, setPassphrase] = useState<string[]>([]);
-  const handledocChange = (value: string) => console.log(`doc is ${value}`)
-  const handleFabClick = () => history.push(`/create-pin`)
+  const [hashId, setHashId] = useState<string>();
+  
+  const handleDocChange = (value: string) => setDocument(value);
+  const handleFabClick = () => history.push({
+    pathname: `/create-pin`,
+    state: { passphrase, hashId },
+  })
   const onChangedDate = (dateString: string) => {
-    console.log(`changed date ${dateString}`);
+    setChosenDate(dateString);
   }
-  const handleGenerateButton = () => {
-      setLoading(true);
-      setTimeout(() => {
+  const handleConfirm = async () => {
+    try {
+        setLoading(true);
+        const newHashId = api.getHashId(document!, chosenDate!);
+        setHashId(newHashId);
+        const phrase = await api.getPassphrase(newHashId);
+        setPassphrase(phrase);
+      } catch(e) {
+        console.error('Error generating passphrase ', e);
+        alert('Error generating passphrase. Please try again');
+      } finally {
         setLoading(false);
-        setPassphrase([`example`, `pass`, `phrase`, `with`, `some`, `words`, `2example`, `2pass`, `2phrase`, `2with`, `2some`, `2words`])
-      }, 1000);
+      }
   }
-
 
   return (
     <div className={classes.RegisterPage}>
@@ -103,8 +119,8 @@ function RegisterPage() {
                       <OutlinedInput
                           id="outline-doc"
                           type={'text'}
-                          onChange={e => handledocChange(e.target.value)}
-                          labelWidth={145}
+                          onChange={e => handleDocChange(e.target.value)}
+                          labelWidth={225}
                           endAdornment={
                           <InputAdornment position="end">
                               <AssignmentIndIcon />
@@ -113,9 +129,7 @@ function RegisterPage() {
                       />
                     </FormControl>
                     <FormControl className={classes.buttonInput}>
-                        <Button disabled={passphrase.length > 0} onClick={handleGenerateButton} variant="outlined" color="primary">
-                            Generate
-                        </Button>
+                      <RegisterConfirmationDialog onConfirm={handleConfirm} dateString={chosenDate} document={document} />
                     </FormControl>
                     <Backdrop className={classes.backdrop} open={loading}>
                         <CircularProgress color="inherit" />
