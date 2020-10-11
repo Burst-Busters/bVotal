@@ -14,9 +14,9 @@ function App() {
   return (
     <div className="App">
       <CssBaseline />
-      <AppBar position="relative">
+      <AppBar color="inherit" position="relative">
         <Toolbar>
-          <img style={{maxHeight: 50 }} src="bvotal-logo.png" />
+          <img style={{maxHeight: 35 }} src="bvotal-logo.png" />
         </Toolbar>
       </AppBar>
       <main>
