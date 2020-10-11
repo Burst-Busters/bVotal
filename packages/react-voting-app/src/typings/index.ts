@@ -7,3 +7,10 @@ export type ActivationMessage = {
     vopts: VotingOption[],
     vaddrs: VotingAddress
 }
+
+
+export enum IS_ELIGIBLE_ENUM {
+    FETCHING,
+    YES,
+    NO
+}
