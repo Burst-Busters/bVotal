@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-import {FormattedMessage } from 'react-intl';
-import {hashId} from '@bvotal/common'
-import { Backdrop, Box, Button, Card, CardContent, CardMedia, Chip, CircularProgress, Divider, Fab, FormControl, IconButton, Input, InputAdornment, InputLabel, List, ListItem, ListItemText, makeStyles, MenuItem, OutlinedInput, Paper, Select, TextField, Typography } from '@material-ui/core';
+import { Backdrop, Box, Button, Card, CardContent, Chip, CircularProgress, Fab, FormControl, InputAdornment, InputLabel, makeStyles, OutlinedInput, Paper, Typography } from '@material-ui/core';
 import PhoneIphoneIcon from '@material-ui/icons/PhoneIphone';
 import { useHistory } from 'react-router-dom';
 import DateSelect from '../../components/DateSelect/DateSelect';
@@ -70,10 +68,6 @@ function GeneratePassphrasePage() {
   const history = useHistory();
   const [loading, setLoading] = useState(false);
   const [passphrase, setPassphrase] = useState<string[]>([]);
-  const [age, setAge] = React.useState('');
-  const handleChange = (event: any) => {
-    setAge(event.target.value);
-  };
   const handlePhoneChange = (value: string) => console.log(`phone is ${value}`)
   const handleFabClick = () => history.push(`/create-pin`)
   const handleGenerateButton = () => {
@@ -84,7 +78,6 @@ function GeneratePassphrasePage() {
       }, 1000);
   }
 
-  const hash = hashId({id:'1244', dob:'12-12-2345'})
 
   return (
     <div className={classes.GeneratePassphrasePage}>

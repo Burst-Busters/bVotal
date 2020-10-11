@@ -1,7 +1,5 @@
 import React from 'react';
 import './StartPage.css';
-import {FormattedMessage } from 'react-intl';
-import {hashId} from '@bvotal/common'
 import { Card, CardContent, CardMedia, Divider, Fab, List, ListItem, ListItemText, makeStyles, Paper, Typography } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 
@@ -51,7 +49,6 @@ const useStyles = makeStyles((theme) => ({
 function StartPage() {
   const classes = useStyles();
   const history = useHistory();
-  const hash = hashId({id:'1244', dob:'12-12-2345'})
   const handleGoClick = () => history.push(`/generate-passphrase`)
   return (
     <div className={classes.startPage}>
