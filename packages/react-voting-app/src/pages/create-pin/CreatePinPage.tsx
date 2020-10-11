@@ -18,7 +18,7 @@ import AssignmentReturnIcon from '@material-ui/icons/AssignmentReturn';
 import EditIcon from '@material-ui/icons/Edit';
 import {useHistory} from 'react-router-dom';
 import * as Services from "../../services"
-import {VotingOption} from "../../typings";
+import {IS_ELIGIBLE_ENUM, VotingOption} from "../../typings";
 
 const useStyles = makeStyles((theme) => ({
     CreatePinPage: {
@@ -105,8 +105,7 @@ function CreatePinPage(props: CreatePinPageProps) {
     const passphrase = location.state.passphrase;
     const hashId = location.state.hashId;
     const [loading, setLoading] = useState(false);
-    const [canSetPin, setCanSetPin] = useState(false);
-    const [isEligible, setIsEligible] = useState(true);
+    const [isEligible, setIsEligible] = useState(IS_ELIGIBLE_ENUM.FETCHING);
     const [pin, setPin] = useState<string>();
     const [publicKey, setPublicKey] = useState<string>();
     const [validPin, setValidPin] = useState(false);
@@ -117,10 +116,10 @@ function CreatePinPage(props: CreatePinPageProps) {
         try {
             setLoading(true)
             await Services.Eligibility.register(hashId, publicKey);
-            setCanSetPin(true);
+            setIsEligible(IS_ELIGIBLE_ENUM.YES);
         } catch (e) {
             console.error(e)
-            setIsEligible(false);
+            setIsEligible(IS_ELIGIBLE_ENUM.NO);
             // TODO: how to handle?
         } finally {
             setLoading(false)
@@ -168,7 +167,7 @@ function CreatePinPage(props: CreatePinPageProps) {
                 <Card className={classes.card}>
                     <div className={classes.cardDetails}>
                         {
-                            !isEligible &&
+                            isEligible == IS_ELIGIBLE_ENUM.NO &&
                             <CardContent>
                                 <Typography component="h2" variant="h5" align="center">
                                     Sorry, you are not eligible to vote now.
@@ -187,7 +186,7 @@ function CreatePinPage(props: CreatePinPageProps) {
                                 </Button>
                             </CardContent>
                         }
-                        { canSetPin && isEligible &&
+                        { isEligible === IS_ELIGIBLE_ENUM.YES &&
                             <CardContent>
                                 <Typography component="p" variant="body2" align="center">
                                     Create a 5 digit PIN code that you will use to Vote
@@ -232,7 +231,7 @@ function CreatePinPage(props: CreatePinPageProps) {
                     </div>
                 </Card>
                 {
-                    isEligible &&
+                    isEligible === IS_ELIGIBLE_ENUM.YES &&
                     <Fab
                         disabled={!validPin}
                         onClick={handleFabClick}
