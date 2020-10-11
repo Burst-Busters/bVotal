@@ -1,4 +1,4 @@
-const {EligibleVoter, Campaign, sequelize} = require("./model");
+const {ActivatedAccount, EligibleVoter, Campaign, sequelize} = require("./model");
 const {logger} = require('../logger')
 
 async function open() {
@@ -6,6 +6,7 @@ async function open() {
     await sequelize.authenticate()
     await EligibleVoter.sync()
     await Campaign.sync()
+    await ActivatedAccount.sync()
 }
 
 module.exports = {

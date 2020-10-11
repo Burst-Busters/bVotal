@@ -21,7 +21,9 @@ const EligibleVoter = sequelize.define(
             type: DataTypes.BOOLEAN,
             defaultValue: false,
         },
-    },
+    },{
+        timestamps: false
+      }
 );
 
 const Campaign = sequelize.define(
@@ -41,12 +43,30 @@ const Campaign = sequelize.define(
             type: DataTypes.STRING,
             allowNull: false,
             unique: true
+        },
+        active: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
         }
     }
+);
+
+const ActivatedAccount = sequelize.define(
+    "ActivatedAccount",
+    {
+        hash: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            unique: true
+        }        
+    },{
+        timestamps: false
+      }
 );
 
 module.exports = {
     sequelize,
     EligibleVoter,
-    Campaign
+    Campaign,
+    ActivatedAccount
 }

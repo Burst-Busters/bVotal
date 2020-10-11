@@ -48,8 +48,8 @@ class Bootstrapper {
         })
         Logger.info(`Loading eligible voters...`)
         await Database.EligibleVoter.bulkCreate(EligibleVoters, {individualHooks: true})
-        Logger.info(`Loaded ${numberVoters} eligible voters`)
         const numberVoters = await Database.EligibleVoter.count();
+        Logger.info(`Loaded ${numberVoters} eligible voters`)
         return numberVoters
     }
 
