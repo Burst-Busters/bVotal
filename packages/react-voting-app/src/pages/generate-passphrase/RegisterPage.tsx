@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
-    Backdrop,
+    Backdrop, Button,
     Card,
     CardContent,
     CircularProgress,
@@ -17,8 +17,11 @@ import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import {useHistory} from 'react-router-dom';
 import DateSelect from '../../components/DateSelect/DateSelect';
 import RegisterConfirmationDialog from '../../components/register-confirmation/RegisterConfirmationDialog';
+import * as Services from '../../services';
 import {Security} from '../../services';
-import { formatDateToBurst } from '../../utils';
+import {formatDateToBurst} from '../../utils';
+import {IS_ELIGIBLE_ENUM} from "../../typings";
+import AssignmentReturnIcon from "@material-ui/icons/AssignmentReturn";
 
 const useStyles = makeStyles((theme) => ({
     RegisterPage: {
@@ -55,6 +58,9 @@ const useStyles = makeStyles((theme) => ({
         zIndex: theme.zIndex.drawer + 1,
         color: '#fff',
     },
+    backButton: {
+        marginTop: theme.spacing(3),
+    },
     buttonInput: {
         display: `block`,
         clear: `both`,
@@ -89,30 +95,46 @@ function RegisterPage() {
     const [chosenDate, setChosenDate] = useState<string>();
     const [document, setDocument] = useState<string>();
     const [passphrase, setPassphrase] = useState<string>('');
-    const [hashId, setHashId] = useState<string>();
+    const [hashId, setHashId] = useState<string>('');
+    const [isEligible, setIsEligible] = useState<IS_ELIGIBLE_ENUM>(IS_ELIGIBLE_ENUM.PENDING);
+
+    useEffect(() => {
+        if(isEligible === IS_ELIGIBLE_ENUM.YES){
+            history.push({
+                pathname: `/create-pin`,
+                state: {passphrase, hashId},
+            })
+        }
+    }, [isEligible])
+
+    const doRegister = async (hashId: string, publicKey: string) => {
+        try {
+            setLoading(true)
+            await Services.Eligibility.register(hashId, publicKey);
+            setIsEligible(IS_ELIGIBLE_ENUM.YES)
+            return
+        } catch (e) {
+            setIsEligible(IS_ELIGIBLE_ENUM.NO)
+        } finally {
+            setLoading(false)
+        }
+    }
 
     const handleDocChange = (value: string) => setDocument(value);
-    const handleFabClick = () => history.push({
-        pathname: `/create-pin`,
-        state: {passphrase, hashId},
-    })
+    const handleFabClick = async () => {
+        const {publicKey} = Services.Security.generateKeys(passphrase);
+        await doRegister(hashId, publicKey)
+
+    }
     const onChangedDate = (dateString: string) => {
         setChosenDate(formatDateToBurst(dateString));
         console.log(formatDateToBurst(dateString));
     }
     const handleConfirm = async () => {
-        try {
-            setLoading(true);
-            const newHashId = Security.getHashId(document!, chosenDate!);
-            const phrase = await Security.generatePassphrase(newHashId);
-            setHashId(newHashId);
-            setPassphrase(phrase);
-        } catch (e) {
-            console.error('Error generating passphrase ', e);
-            alert('Error generating passphrase. Please try again');
-        } finally {
-            setLoading(false);
-        }
+        const newHashId = Security.getHashId(document!, chosenDate!);
+        const phrase = await Security.generatePassphrase(newHashId);
+        setHashId(newHashId);
+        setPassphrase(phrase);
     }
 
     return (
@@ -125,7 +147,28 @@ function RegisterPage() {
                 </Typography>
                 <Card className={classes.card}>
                     <div className={classes.cardDetails}>
-                        { !passphrase &&
+                        {
+                            // TODO: would be better as a sinlge page
+                            isEligible === IS_ELIGIBLE_ENUM.NO &&
+                            <CardContent>
+                                <Typography component="h2" variant="h5" align="center">
+                                    Sorry, you are not eligible to vote now.
+                                </Typography>
+                                <Typography component="p" variant="body2" align="center">
+                                    Maybe you are not registered to vote, or you already voted.
+                                </Typography>
+                                <Button
+                                    variant="contained"
+                                    href="/"
+                                    color="secondary"
+                                    className={classes.backButton}
+                                    startIcon={<AssignmentReturnIcon />}
+                                >
+                                    Go Back
+                                </Button>
+                            </CardContent>
+                        }
+                        { isEligible === IS_ELIGIBLE_ENUM.PENDING &&
                             <CardContent>
                                 <Typography component="p" variant="body2" align="center">
                                     Input your date of birth and document number to get started:
@@ -152,13 +195,6 @@ function RegisterPage() {
                                 <Backdrop className={classes.backdrop} open={loading}>
                                     <CircularProgress color="inherit"/>
                                 </Backdrop>
-                            </CardContent>
-                        }
-                        { !!passphrase &&
-                            <CardContent>
-                                <Typography component="p" variant="body2" align="center">
-                                    Thank you. Please click in the 'Next' button bellow to proceed.
-                                </Typography>
                             </CardContent>
                         }
                     </div>

@@ -104,39 +104,10 @@ function CreatePinPage(props: CreatePinPageProps) {
     const {location} = props;
     const history = useHistory();
     const passphrase = location.state.passphrase;
-    const hashId = location.state.hashId;
-    const [loading, setLoading] = useState(false);
-    const [isEligible, setIsEligible] = useState<IS_ELIGIBLE_ENUM>(IS_ELIGIBLE_ENUM.FETCHING);
     const [pin, setPin] = useState<string>();
-    const [publicKey, setPublicKey] = useState<string>();
     const [validPin, setValidPin] = useState(false);
     const [votingOptions, setVotingOptions] = useState<VotingOption[]>();
     const [votingAddress, setVotingAddress] = useState<string>();
-
-    const doRegister = async (hashId: string, publicKey: string) => {
-        try {
-            setLoading(true)
-            await Services.Eligibility.register(hashId, publicKey);
-            setIsEligible(IS_ELIGIBLE_ENUM.YES);
-            Services.Eligibility.waitForActivationMessage(publicKey)
-        } catch (e) {
-            console.error(e)
-            setIsEligible(IS_ELIGIBLE_ENUM.NO);
-            // TODO: how to handle?
-        } finally {
-            setLoading(false)
-        }
-    }
-
-    useEffect(() => {
-        const {publicKey} = Services.Security.generateKeys(passphrase);
-        setPublicKey(publicKey);
-    }, [])
-
-    useEffect(() => {
-        if (!hashId || !publicKey) return;
-        doRegister(hashId, publicKey);
-    }, [publicKey]);
 
     const handlePinChange = (pin: string) => {
         setPin(pin);
@@ -149,6 +120,7 @@ function CreatePinPage(props: CreatePinPageProps) {
 
         Services.Security.storePassphrase(passphrase, pin!)
 
+        // TODO: go to wating screen
         history.push({
             pathname: `/vote`,
             state: {
@@ -168,82 +140,54 @@ function CreatePinPage(props: CreatePinPageProps) {
                 </Typography>
                 <Card className={classes.card}>
                     <div className={classes.cardDetails}>
-                        {
-                            isEligible === IS_ELIGIBLE_ENUM.NO &&
-                            <CardContent>
-                                <Typography component="h2" variant="h5" align="center">
-                                    Sorry, you are not eligible to vote now.
-                                </Typography>
-                                <Typography component="p" variant="body2" align="center">
-                                    Maybe you are not registered to vote, or you already voted.
-                                </Typography>
-                                <Button
-                                    variant="contained"
-                                    href="/"
-                                    color="secondary"
-                                    className={classes.backButton}
-                                    startIcon={<AssignmentReturnIcon />}
-                                >
-                                    Go Back
-                                </Button>
-                            </CardContent>
-                        }
-                        { isEligible === IS_ELIGIBLE_ENUM.YES &&
-                            <CardContent>
-                                <Typography component="p" variant="body2" align="center">
-                                    Create a 5 digit PIN code that you will use to Vote
-                                </Typography>
-                                <FormControl className={classes.pinInput} variant="outlined">
-                                    <InputLabel htmlFor="outline-pin">PIN</InputLabel>
-                                    <OutlinedInput
-                                        id="outline-pin"
-                                        type={'text'}
-                                        onChange={e => handlePinChange(e.target.value)}
-                                        labelWidth={30}
-                                        endAdornment={
-                                            <InputAdornment position="end">
-                                                <EditIcon/>
-                                            </InputAdornment>
-                                        }
-                                    />
-                                </FormControl>
-                                <Typography className={classes.pinConfirmLabel} component="p" variant="body2"
-                                            align="center">
-                                    Confirm your PIN by typing it again bellow:
-                                </Typography>
-                                <FormControl className={classes.pinConfirmInput} variant="outlined">
-                                    <InputLabel htmlFor="outline-confirm-pin">Confirm PIN</InputLabel>
-                                    <OutlinedInput
-                                        id="outline-confirm-pin"
-                                        type={'text'}
-                                        onChange={e => handleConfirmPinChange(e.target.value)}
-                                        labelWidth={90}
-                                        endAdornment={
-                                            <InputAdornment position="end">
-                                                <EditIcon/>
-                                            </InputAdornment>
-                                        }
-                                    />
-                                </FormControl>
-                                <Backdrop className={classes.backdrop} open={loading}>
-                                    <CircularProgress color="inherit"/>
-                                </Backdrop>
-                            </CardContent>
-                        }
+                        <CardContent>
+                            <Typography component="p" variant="body2" align="center">
+                                Create a 5 digit PIN code that you will use to Vote
+                            </Typography>
+                            <FormControl className={classes.pinInput} variant="outlined">
+                                <InputLabel htmlFor="outline-pin">PIN</InputLabel>
+                                <OutlinedInput
+                                    id="outline-pin"
+                                    type={'text'}
+                                    onChange={e => handlePinChange(e.target.value)}
+                                    labelWidth={30}
+                                    endAdornment={
+                                        <InputAdornment position="end">
+                                            <EditIcon/>
+                                        </InputAdornment>
+                                    }
+                                />
+                            </FormControl>
+                            <Typography className={classes.pinConfirmLabel} component="p" variant="body2"
+                                        align="center">
+                                Confirm your PIN by typing it again bellow:
+                            </Typography>
+                            <FormControl className={classes.pinConfirmInput} variant="outlined">
+                                <InputLabel htmlFor="outline-confirm-pin">Confirm PIN</InputLabel>
+                                <OutlinedInput
+                                    id="outline-confirm-pin"
+                                    type={'text'}
+                                    onChange={e => handleConfirmPinChange(e.target.value)}
+                                    labelWidth={90}
+                                    endAdornment={
+                                        <InputAdornment position="end">
+                                            <EditIcon/>
+                                        </InputAdornment>
+                                    }
+                                />
+                            </FormControl>
+                        </CardContent>
                     </div>
                 </Card>
-                {
-                    isEligible === IS_ELIGIBLE_ENUM.YES &&
-                    <Fab
-                        disabled={!validPin}
-                        onClick={handleFabClick}
-                        className={classes.fab}
-                        size="large"
-                        color="secondary"
-                        aria-label="go">
-                        Next
-                    </Fab>
-                }
+                <Fab
+                    disabled={!validPin}
+                    onClick={handleFabClick}
+                    className={classes.fab}
+                    size="large"
+                    color="secondary"
+                    aria-label="go">
+                    Next
+                </Fab>
             </Paper>
         </div>
     );
