@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Route, Switch, Redirect, Link } from "react-router-dom";
 import { Avatar, Backdrop, Box, Button, Card, CardActionArea, CardActions, CardContent, CardMedia, Checkbox, Chip, CircularProgress, Divider, Fab, FormControl, IconButton, Input, InputAdornment, InputLabel, List, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText, makeStyles, OutlinedInput, Paper, TextField, Typography } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import { useHistory } from 'react-router-dom';
@@ -93,18 +94,20 @@ function ThankYouPage() {
             Thank you!
           </Typography>
           <Card className={classes.root}>
-            <CardActionArea>
-                <CardContent>
-                    <Typography gutterBottom variant="h5" component="h2">
-                        Your vote has been computed.
-                    </Typography>
-                    <Typography variant="body2" color="textSecondary" component="p">
-                        Thank you for your vote. It has been sucessfully computed.
-                        <br />
-                        You can print a receipt if you want.
-                    </Typography>
-                </CardContent>
-            </CardActionArea>
+            <Link to="/">
+              <CardActionArea>
+                  <CardContent>
+                      <Typography gutterBottom variant="h5" component="h2">
+                          Your vote has been computed.
+                      </Typography>
+                      <Typography variant="body2" color="textSecondary" component="p">
+                          Thank you for your vote. It has been sucessfully computed.
+                          <br />
+                          You can print a receipt if you want.
+                      </Typography>
+                  </CardContent>
+              </CardActionArea>
+            </Link>
             <CardActions>
                 <Button size="small" color="primary">
                     Print

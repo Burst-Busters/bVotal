@@ -18,3 +18,8 @@ body{
 .MuiCheckbox-colorSecondary.Mui-checked {
     color:  #48C6AC!important
 }
+/*calendar*/
+.MuiFormControl-root {
+    margin-top: 9px!important;
+    min-width: 120px!important;
+}
