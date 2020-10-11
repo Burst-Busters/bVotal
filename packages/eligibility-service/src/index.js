@@ -1,5 +1,5 @@
 const {program} = require('commander');
-const {start, bootstrap} = require('./commands')
+const {start, bootstrap, forgeBlock} = require('./commands')
 
 program
     .command('start [options]')
@@ -11,5 +11,8 @@ program.command('bootstrap <name>')
     .description('Bootstraps a new election campaign')
     .action(async name => bootstrap({name}))
 
+program.command('forgeBlock <secretPhrase>')
+    .description('Forges a block (only for local development)')
+    .action(async secretPhrase => forgeBlock({secretPhrase}))
 
 program.parseAsync(process.argv);
