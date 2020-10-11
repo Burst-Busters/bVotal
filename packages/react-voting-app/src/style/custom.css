@@ -11,5 +11,6 @@ body{
 }
 /*MuiChip-root*/
 .MuiChip-root{
-    background-color: #ff9800ab!important;
+    background-color: #48C6AC!important;
+    color: #fff!important;
 }
