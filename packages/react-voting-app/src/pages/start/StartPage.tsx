@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
 function StartPage() {
   const classes = useStyles();
   const history = useHistory();
-  const handleGoClick = () => history.push(`/generate-passphrase`)
+  const handleGoClick = () => history.push(`/register`)
   return (
     <div className={classes.startPage}>
       <Paper className={classes.paper}>

@@ -3,13 +3,13 @@ import './App.css';
 import { Route, Switch, Redirect, Link } from "react-router-dom";
 import StartPage from './pages/start/StartPage';
 import { AppBar, CssBaseline, Toolbar } from '@material-ui/core';
-import GeneratePassphrasePage from './pages/generate-passphrase/GeneratePassphrasePage';
 import CreatePinPage from './pages/create-pin/CreatePinPage';
 import VotePage from './pages/vote/VotePage';
 import ThankYouPage from './pages/thankyou/ThankYouPage';
 import ErrorPage from './pages/error/ErrorPage';
 //Custom CSS
 import "./style/custom.css";
+import RegisterPage from './pages/generate-passphrase/RegisterPage';
 
 function App() {
 
@@ -24,7 +24,7 @@ function App() {
       <main>
         <Switch>
           <Route path="/" exact component={StartPage} />
-          <Route path="/generate-passphrase" exact component={GeneratePassphrasePage} />
+          <Route path="/register" exact component={RegisterPage} />
           <Route path="/create-pin" exact component={CreatePinPage} />
           <Route path="/vote" exact component={VotePage} />
           <Route path="/thank-you" exact component={ThankYouPage} />
