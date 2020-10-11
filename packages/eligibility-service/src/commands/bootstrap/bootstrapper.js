@@ -54,12 +54,12 @@ class Bootstrapper {
     }
 
     async run() {
-        const {Logger} = this._context
+        const {Logger, Config} = this._context
         Logger.info(`Bootstrapping...`)
         const activationPassphrase = await Bootstrapper.#createRandomPassphrase()
         const votingPassphrase = await Bootstrapper.#createRandomPassphrase()
         const numberVoters = this.#initializeCampaignData({activationPassphrase, votingPassphrase})
-        const minimumElectionFund = BurstValue.fromBurst(numberVoters * 0.25);
+        const minimumElectionFund = BurstValue.fromBurst(numberVoters * Config.VoterFundBurst);
         await this.#premine({passphrase: activationPassphrase, minimumElectionFund})
     }
 

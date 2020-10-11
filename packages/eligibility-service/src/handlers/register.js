@@ -1,17 +1,10 @@
-const {sendActivationMessage} = require("../blockchain");
-const {EligibleVoter} = require("../database/model");
 const Boom = require('@hapi/boom')
-/*
-Incoming message format is
+const {sendActivationMessage} = require("../blockchain");
+const {EligibleVoter, Campaign} = require("../database");
+const Config = require("../config")
 
-{
- hash: <hashedId>
- pub: <Accounts public key>
-}
-
- */
 const register = async (req, res) => {
-    const {hash, pub} = req.body;
+    const {hash, pub : recipientPublicKey} = req.body;
     const voter = await EligibleVoter.findOne({where: {hash}});
 
     if (voter === null) {
@@ -23,7 +16,24 @@ const register = async (req, res) => {
     }
 
     await EligibleVoter.update({active: true}, {where: {hash}});
-    await sendActivationMessage({recipientPublicKey: pub})
+
+    const campaigns = await Campaign.findAll({
+        attributes: ['activationPassphrase']
+    })
+
+    if(!campaigns.length){
+        throw Boom.notFound('No campaign found')
+    }
+
+    const {activationPassphrase} = campaigns[0]
+
+    // TODO: voting options are part of campaign --> bootstrapper needs to create'em
+    const votingOptions = Config.VotingOptions
+    await sendActivationMessage({
+        recipientPublicKey,
+        activationPassphrase,
+        votingOptions,
+    })
     res.end()
 }
 

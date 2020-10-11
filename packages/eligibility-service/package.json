@@ -6,7 +6,7 @@
   "license": "MIT",
   "scripts": {
     "start": "node src/index.js -- start",
-    "dev:service": "nodemon src/index.js start -- start",
+    "dev:service": "nodemon src/index.js -- start",
     "bootstrap:dev": "node src/index.js -- bootstrap TestCampaign"
   },
   "dependencies": {

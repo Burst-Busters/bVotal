@@ -7,15 +7,15 @@ onShutdown("bootstrapper", async function () {
 });
 
 async function bootstrap({name}) {
-    try{
+    try {
+        // TODO: pass into database
+        const votingOptions = []
 
-    const votingOptions = []
-
-    return await Bootstrapper.run({
-        campaignName: name,
-        context: Context
-    });
-    }catch(e){
+        return await Bootstrapper.run({
+            campaignName: name,
+            context: Context
+        });
+    } catch (e) {
         Context.Logger.error(e)
     }
 }

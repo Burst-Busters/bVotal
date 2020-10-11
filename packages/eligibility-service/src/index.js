@@ -1,4 +1,4 @@
-const { program } = require('commander');
+const {program} = require('commander');
 const {start, bootstrap} = require('./commands')
 
 program
