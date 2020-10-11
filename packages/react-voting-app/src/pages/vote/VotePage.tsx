@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Avatar, Backdrop, Card, CardContent, Checkbox, CircularProgress, Fab, List, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText, makeStyles, Paper, Typography } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
-import { VotingAddress, VotingOption as ApiVotingOption } from '../../services/api';
+import { VotingAddress, VotingOption } from '../../services/api';
 const useStyles = makeStyles((theme) => ({
   VotePage: {
     width: 'auto',
@@ -53,23 +53,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export type VotingOption = {
-    key: number;
-    title: string;
-    description: string;
-}
-
-const VotingOptions: VotingOption[] = [
-    {key: 1, title: "Option 1", description: "This is option 1 - best candidate ever"},
-    {key: 2, title: "Option 2", description: "This one saves the nation"},
-    {key: 3, title: "Option 3", description: "This egomaniac politician wants your money"},
-    {key: 4, title: "Option 4", description: "This guy is against Option 1"},
-]
-
 export type VotePageProps = {
   location: {
     state: {
-      votingOptions: ApiVotingOption[],
+      votingOptions: VotingOption[],
       votingAddress: VotingAddress,
     }
   }
@@ -79,8 +66,8 @@ function VotePage(props: VotePageProps) {
   const classes = useStyles();
   const { location } = props;
   const history = useHistory();
-  const passphrase = location.state.votingOptions;
-  const hashId = location.state.votingAddress;
+  const votingOptions = location.state.votingOptions;
+  const votingAddress = location.state.votingAddress;
   const [loading] = useState(false);
   const handleFabClick = () => history.push(`/thank-you`);
   const [checked, setChecked] = React.useState<VotingOption[]>([]);
@@ -114,7 +101,7 @@ function VotePage(props: VotePageProps) {
                     </Typography>
 
                     <List dense className={classes.root}>
-                        {VotingOptions.map((value) => {
+                        {votingOptions.map((value) => {
                             const labelId = `checkbox-list-secondary-label-${value}`;
                             return (
                             <ListItem key={value.key} onClick={handleToggle(value)} button>
@@ -124,7 +111,7 @@ function VotePage(props: VotePageProps) {
                                     src={`/static/images/avatar/${value.key}.jpg`}
                                 />
                                 </ListItemAvatar>
-                                <ListItemText id={labelId} primary={value.title} secondary={value.description} />
+                                <ListItemText id={labelId} primary={value.title} secondary={value.desc} />
                                 <ListItemSecondaryAction>
                                 <Checkbox
                                     edge="end"
