@@ -7,7 +7,9 @@
   "scripts": {
     "start": "node src/index.js -- start",
     "dev:service": "nodemon src/index.js -- start",
-    "bootstrap:dev": "node src/index.js -- bootstrap TestCampaign"
+    "dev:bootstrap": "node src/index.js -- bootstrap TestCampaign",
+    "dev:forge": "node src/index.js -- forgeBlock TestPhrase",
+    "commands": "node src/index.js -- help"
   },
   "dependencies": {
     "@burstjs/core": "^0.5.1",
