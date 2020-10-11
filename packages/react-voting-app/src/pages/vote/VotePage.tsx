@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Avatar, Backdrop, Card, CardContent, Checkbox, CircularProgress, Fab, List, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText, makeStyles, Paper, Typography } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
-import { VotingAddress, VotingOption } from '../../services/api';
+import {VotingAddress, VotingOption} from "../../typings";
 const useStyles = makeStyles((theme) => ({
   VotePage: {
     width: 'auto',

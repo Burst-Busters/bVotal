@@ -16,7 +16,8 @@ import {
 } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import {useHistory} from 'react-router-dom';
-import api, {VotingOption} from '../../services/api';
+import * as Services from "../../services"
+import {VotingOption} from "../../typings";
 
 const useStyles = makeStyles((theme) => ({
     CreatePinPage: {
@@ -109,7 +110,7 @@ function CreatePinPage(props: CreatePinPageProps) {
     const doRegister = async (hashId: string, publicKey: string) => {
         try {
             setLoading(true)
-            const {vaddrs, vopts} = await api.register(hashId, publicKey);
+            const {vaddrs, vopts} = await Services.Eligibility.register(hashId, publicKey);
             setVotingOptions(vopts);
             setVotingAddress(vaddrs);
         } catch (e) {
@@ -121,7 +122,7 @@ function CreatePinPage(props: CreatePinPageProps) {
     }
 
     useEffect(() => {
-        const {publicKey} = api.getMasterKeys(passphrase);
+        const {publicKey} = Services.Security.generateKeys(passphrase);
         setPublicKey(publicKey);
     }, [])
 
@@ -139,7 +140,7 @@ function CreatePinPage(props: CreatePinPageProps) {
 
     const handleFabClick = () => {
 
-        api.storePassphrase(passphrase, pin!)
+        Services.Security.storePassphrase(passphrase, pin!)
 
         history.push({
             pathname: `/vote`,
