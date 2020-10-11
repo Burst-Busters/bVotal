@@ -1,9 +1,7 @@
-const { SHA3 } = require('sha3');
+const {hashText} = require("./hashText");
 
 function hashId({ id, dob }){
-    const hash = new SHA3(); // defaults to 512
-    hash.update(JSON.stringify({id, dob}));
-    return hash.digest('base64');
+    return hashText(JSON.stringify({id, dob}));
 }
 
 module.exports = {

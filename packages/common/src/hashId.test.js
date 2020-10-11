@@ -1,5 +1,4 @@
 const {hashId} = require("./hashId");
-const {describe, it} = require("@jest/globals");
 
 describe('hashId', () => {
     it('should generate hash as expected', () => {
