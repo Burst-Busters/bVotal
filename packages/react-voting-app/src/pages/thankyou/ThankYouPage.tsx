@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Avatar, Backdrop, Box, Button, Card, CardContent, CardMedia, Checkbox, Chip, CircularProgress, Divider, Fab, FormControl, IconButton, Input, InputAdornment, InputLabel, List, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText, makeStyles, OutlinedInput, Paper, TextField, Typography } from '@material-ui/core';
+import { Avatar, Backdrop, Box, Button, Card, CardActionArea, CardActions, CardContent, CardMedia, Checkbox, Chip, CircularProgress, Divider, Fab, FormControl, IconButton, Input, InputAdornment, InputLabel, List, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText, makeStyles, OutlinedInput, Paper, TextField, Typography } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import { useHistory } from 'react-router-dom';
 const useStyles = makeStyles((theme) => ({
-  VotePage: {
+  ThankYouPage: {
     width: 'auto',
     marginLeft: theme.spacing(2),
     marginRight: theme.spacing(2),
@@ -66,11 +66,11 @@ const VotingOptions: VotingOption[] = [
     {key: 4, title: "Option 4", description: "This guy is against Option 1"},
 ]
 
-function VotePage() {
+function ThankYouPage() {
   const classes = useStyles();
   const history = useHistory();
   const [loading, setLoading] = useState(false);
-  const handleFabClick = () => history.push(`/thank-you`);
+  const handleFabClick = () => alert(`voted!`);
   const [checked, setChecked] = React.useState<VotingOption[]>([]);
 
   const handleToggle = (value: VotingOption) => () => {
@@ -87,50 +87,32 @@ function VotePage() {
   };
 
   return (
-    <div className={classes.VotePage}>
+    <div className={classes.ThankYouPage}>
       <Paper className={classes.paper}>
           <Typography component="h1" variant="h5" align="center">
-          <Fab size="medium" disabled color="primary" aria-label="1">
-              3
-            </Fab> Place your Vote
+            Thank you!
           </Typography>
-            <Card className={classes.card}>
-              <div className={classes.cardDetails}>
+          <Card className={classes.root}>
+            <CardActionArea>
                 <CardContent>
-                   <Typography component="p" variant="body2" align="center">
-                        What is your vote?
+                    <Typography gutterBottom variant="h5" component="h2">
+                        Your vote has been computed.
                     </Typography>
-
-                    <List dense className={classes.root}>
-                        {VotingOptions.map((value) => {
-                            const labelId = `checkbox-list-secondary-label-${value}`;
-                            return (
-                            <ListItem key={value.key} onClick={handleToggle(value)} button>
-                                <ListItemAvatar>
-                                <Avatar
-                                    alt={`Avatar n°${value.key}`}
-                                    src={`/static/images/avatar/${value.key}.jpg`}
-                                />
-                                </ListItemAvatar>
-                                <ListItemText id={labelId} primary={value.title} secondary={value.description} />
-                                <ListItemSecondaryAction>
-                                <Checkbox
-                                    edge="end"
-                                    onChange={handleToggle(value)}
-                                    checked={checked.indexOf(value) !== -1}
-                                    inputProps={{ 'aria-labelledby': labelId }}
-                                />
-                                </ListItemSecondaryAction>
-                            </ListItem>
-                            );
-                        })}
-                        </List>
-                    
-                    <Backdrop className={classes.backdrop} open={loading}>
-                        <CircularProgress color="inherit" />
-                    </Backdrop>
+                    <Typography variant="body2" color="textSecondary" component="p">
+                        Thank you for your vote. It has been sucessfully computed.
+                        <br />
+                        You can print a receipt if you want.
+                    </Typography>
                 </CardContent>
-              </div>
+            </CardActionArea>
+            <CardActions>
+                <Button size="small" color="primary">
+                Share
+                </Button>
+                <Button size="small" color="primary">
+                Learn More
+                </Button>
+            </CardActions>
             </Card>
             <Fab 
                 onClick={handleFabClick}
@@ -145,4 +127,4 @@ function VotePage() {
   );
 }
 
-export default VotePage;
+export default ThankYouPage;
