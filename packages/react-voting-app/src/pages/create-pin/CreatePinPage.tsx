@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Backdrop, Button, Card, CardContent, CircularProgress, Fab, FormControl, InputAdornment, InputLabel, makeStyles, OutlinedInput, Paper, Typography } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import { useHistory } from 'react-router-dom';
@@ -68,13 +68,20 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(2),
   }
 }))
-function CreatePinPage() {
+function CreatePinPage(props: { location: { state: {passphrase: string } }}) {
   const classes = useStyles();
+  const { location } = props;
   const history = useHistory();
+  const passphrase = location.state.passphrase;
   const [loading, setLoading] = useState(false);
   const [pin, setPin] = useState<string>();
   const [validPin, setValidPin] = useState(false);
   const [isPinCreated, setIsPinCreated] = useState(false);
+
+  useEffect(() => {
+    console.log(`the passphrase is `, passphrase);
+  }, [])
+
   const handlePinChange = (value: string) => {
     console.log(`PIN is ${value}`);
     setPin(value);

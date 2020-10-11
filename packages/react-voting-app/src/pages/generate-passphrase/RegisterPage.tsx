@@ -75,7 +75,10 @@ function RegisterPage() {
   const [document, setDocument] = useState<string>();
   const [passphrase, setPassphrase] = useState<string[]>([]);
   const handleDocChange = (value: string) => setDocument(value);
-  const handleFabClick = () => history.push(`/create-pin`)
+  const handleFabClick = () => history.push({
+    pathname: `/create-pin`,
+    state: { passphrase },
+  })
   const onChangedDate = (dateString: string) => {
     setChosenDate(dateString);
   }
