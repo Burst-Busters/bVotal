@@ -1,7 +1,7 @@
 const rateLimit = require('express-rate-limit')
 
 const messageResponse = message => JSON.stringify({message})
-const isApiRequest = req => req.path.toLowerCase().startsWith('/eligibility')
+const isApiRequest = req => req.path.toLowerCase().startsWith('/api')
 
 const limiter = rateLimit(
     {
