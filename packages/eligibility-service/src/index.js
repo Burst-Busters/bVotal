@@ -2,6 +2,9 @@ const {program} = require('commander');
 const {start, bootstrap, forgeBlock} = require('./commands')
 
 program
+    .name('bvotal-service')
+
+program
     .command('start [options]')
     .description('Starts the Eligibility Service')
     .action(start)
