@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button, Card, CardActionArea, CardActions, CardContent, makeStyles, Paper, Typography } from '@material-ui/core';
+import { Link } from 'react-router-dom';
 const useStyles = makeStyles((theme) => ({
   ThankYouPage: {
     width: 'auto',
@@ -68,18 +69,20 @@ function ThankYouPage() {
             Thank you!
           </Typography>
           <Card className={classes.root}>
-            <CardActionArea>
-                <CardContent>
-                    <Typography gutterBottom variant="h5" component="h2">
-                        Your vote has been computed.
-                    </Typography>
-                    <Typography variant="body2" color="textSecondary" component="p">
-                        Thank you for your vote. It has been sucessfully computed.
-                        <br />
-                        You can print a receipt if you want.
-                    </Typography>
-                </CardContent>
-            </CardActionArea>
+            <Link to="/">
+              <CardActionArea>
+                  <CardContent>
+                      <Typography gutterBottom variant="h5" component="h2">
+                          Your vote has been computed.
+                      </Typography>
+                      <Typography variant="body2" color="textSecondary" component="p">
+                          Thank you for your vote. It has been sucessfully computed.
+                          <br />
+                          You can print a receipt if you want.
+                      </Typography>
+                  </CardContent>
+              </CardActionArea>
+            </Link>
             <CardActions>
                 <Button size="small" color="primary">
                     Print

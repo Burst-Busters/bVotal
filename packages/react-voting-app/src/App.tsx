@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import { Route, Switch, Redirect } from "react-router-dom";
+import { Route, Switch, Redirect, Link } from "react-router-dom";
 import StartPage from './pages/start/StartPage';
 import { AppBar, CssBaseline, Toolbar } from '@material-ui/core';
 import GeneratePassphrasePage from './pages/generate-passphrase/GeneratePassphrasePage';
@@ -18,7 +18,7 @@ function App() {
       <CssBaseline />
       <AppBar color="inherit" className="box_shadow" position="relative">
         <Toolbar>
-          <img style={{maxHeight: 30 }} alt="bVotal" src="bvotal-logo.png" />
+          <Link to="/"><img style={{maxHeight: 30 }} alt="bVotal" src="bvotal-logo.png" /></Link>
         </Toolbar>
       </AppBar>
       <main>
