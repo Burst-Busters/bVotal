@@ -9,6 +9,9 @@ const useStyles = makeStyles((theme) => ({
       width: '100%',
       display: 'block',
       clear: 'both',
+      '& .MuiFormControl-root': {
+          minWidth: 120,
+      }
     },
 }))
 
@@ -29,7 +32,6 @@ function DateSelect(props: DateSelectProps) {
     
     return (
         <Box className={classes.dateWrapper}>
-            
         <FormControl variant="outlined">
             <InputLabel id="month-select-label">Month</InputLabel>
                 <Select
@@ -37,6 +39,7 @@ function DateSelect(props: DateSelectProps) {
                     id="month-select"
                     value={month}
                     onChange={handleMonthChange}
+                    labelWidth={50}
                     >
                 <MenuItem value="">
                     <em>None</em>
@@ -52,6 +55,7 @@ function DateSelect(props: DateSelectProps) {
                     id="day-select"
                     value={day}
                     onChange={handleDayChange}
+                    labelWidth={30}
                     >
                 <MenuItem value="">
                     <em>None</em>
@@ -67,6 +71,7 @@ function DateSelect(props: DateSelectProps) {
                     id="year-select"
                     value={year}
                     onChange={handleYearChange}
+                    labelWidth={30}
                     >
                 <MenuItem value="">
                     <em>None</em>
