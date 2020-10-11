@@ -8,6 +8,7 @@ import GeneratePassphrasePage from './pages/generate-passphrase/GeneratePassphra
 import CreatePinPage from './pages/create-pin/CreatePinPage';
 import VotePage from './pages/vote/VotePage';
 import ThankYouPage from './pages/thankyou/ThankYouPage';
+import ErrorPage from './pages/error/ErrorPage';
 function App() {
 
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path="/create-pin" exact component={CreatePinPage} />
           <Route path="/vote" exact component={VotePage} />
           <Route path="/thank-you" exact component={ThankYouPage} />
+          <Route path="/error" exact component={ErrorPage} />
           <Route path='/default' render={() => <Redirect to= "/" />} />
         </Switch>
       </main>
