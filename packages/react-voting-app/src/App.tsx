@@ -6,6 +6,7 @@ import { AppBar, CssBaseline, Toolbar, Typography } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import GeneratePassphrasePage from './pages/generate-passphrase/GeneratePassphrasePage';
 import CreatePinPage from './pages/create-pin/CreatePinPage';
+import VotePage from './pages/vote/VotePage';
 function App() {
 
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/" exact component={StartPage} />
           <Route path="/generate-passphrase" exact component={GeneratePassphrasePage} />
           <Route path="/create-pin" exact component={CreatePinPage} />
+          <Route path="/vote" exact component={VotePage} />
           <Route path='/default' render={() => <Redirect to= "/" />} />
         </Switch>
       </main>
