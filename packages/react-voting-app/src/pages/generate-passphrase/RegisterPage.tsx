@@ -74,10 +74,12 @@ function RegisterPage() {
   const [chosenDate, setChosenDate] = useState<string>();
   const [document, setDocument] = useState<string>();
   const [passphrase, setPassphrase] = useState<string[]>([]);
+  const [hashId, setHashId] = useState<string>();
+  
   const handleDocChange = (value: string) => setDocument(value);
   const handleFabClick = () => history.push({
     pathname: `/create-pin`,
-    state: { passphrase },
+    state: { passphrase, hashId },
   })
   const onChangedDate = (dateString: string) => {
     setChosenDate(dateString);
@@ -85,8 +87,9 @@ function RegisterPage() {
   const handleConfirm = async () => {
     try {
         setLoading(true);
-        const hashId = api.getHashId(document!, chosenDate!);
-        const phrase = await api.getPassphrase(hashId);
+        const newHashId = api.getHashId(document!, chosenDate!);
+        setHashId(newHashId);
+        const phrase = await api.getPassphrase(newHashId);
         setPassphrase(phrase);
       } catch(e) {
         console.error('Error generating passphrase ', e);
