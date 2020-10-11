@@ -12,12 +12,19 @@ async function sendActivationMessage({recipientPublicKey, activationPassphrase, 
     const senderKeys = generateMasterKeys(activationPassphrase);
 
     const votingAccKeys = generateMasterKeys(votingPassphrase);
-    const votingAddress = convertNumericIdToAddress(getAccountIdFromPublicKey(votingAccKeys.publicKey));
+    const votingAddress = getAccountIdFromPublicKey(votingAccKeys.publicKey);
+
+    const activationMessage = {
+        vopts: votingOptions,
+        vaddrs: votingAddress
+    }
 
     const attachment = new AttachmentMessage({
         messageIsText: true,
-        message: JSON.stringify(votingOptions.push({ votingAddress: votingAddress })) //I am not sure about this
+        message: JSON.stringify(activationMessage)
     })
+
+    try{
 
     await BurstApi.transaction.sendAmountToSingleRecipient({
         amountPlanck: BurstValue.fromBurst(Config.VoterFundBurst).getPlanck(),
@@ -29,6 +36,9 @@ async function sendActivationMessage({recipientPublicKey, activationPassphrase, 
         recipientPublicKey,
         attachment,
     });
+    }catch(e){
+        console.log(e)
+    }
     logger.info(`Sent successfully to ${recipientPublicKey}`)
 }
 
