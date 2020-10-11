@@ -6,6 +6,8 @@ const {
     getAccountIdFromPublicKey
 } = require("@burstjs/crypto");
 
+const {VotingOptions} = require("../../config")
+
 const {EligibleVoters} = require("./mockedEligibleVoters");
 const {getAccountBalance} = require('../../blockchain')
 
@@ -44,7 +46,8 @@ class Bootstrapper {
         await Database.Campaign.create({
             name: this._campaignName,
             activationPassphrase,
-            votingPassphrase
+            votingPassphrase,
+            options: VotingOptions
         })
         Logger.info(`Loading eligible voters...`)
         await Database.EligibleVoter.bulkCreate(EligibleVoters, {individualHooks: true})

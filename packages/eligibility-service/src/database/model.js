@@ -44,6 +44,10 @@ const Campaign = sequelize.define(
             allowNull: false,
             unique: true
         },
+        options: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
         active: {
             type: DataTypes.BOOLEAN,
             defaultValue: false

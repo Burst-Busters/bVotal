@@ -27,8 +27,23 @@ const register = async (req, res) => {
 
     const {activationPassphrase} = campaigns[0]
 
-    // TODO: voting options are part of campaign --> bootstrapper needs to create'em
-    const votingOptions = Config.VotingOptions
+    const options = await Campaign.findAll({
+        attributes: ['options']
+    })
+
+    if(!options.length){
+        throw Boom.notFound('No voting options found')
+    }
+
+    const votingPassphrase = await Campaign.findAll({
+        attributes: ['votingPassphrase']
+    })
+
+    if(!votingPassphrase.length){
+        throw Boom.notFound('No voting account found')
+    }
+
+    const {votingPassphrase} = votingPassphrase[0]
 
     const activated = await ActivatedAccount.findOne({where: {recipientPublicKey}}); //here we need to use hashing
 
@@ -42,6 +57,7 @@ const register = async (req, res) => {
         recipientPublicKey,
         activationPassphrase,
         votingOptions,
+        votingPassphrase
     })
     res.end()
 }
