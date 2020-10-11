@@ -118,7 +118,7 @@ function CreatePinPage(props: CreatePinPageProps) {
             setLoading(true)
             await Services.Eligibility.register(hashId, publicKey);
             setIsEligible(IS_ELIGIBLE_ENUM.YES);
-            Eligibility.waitForActivationMessage(publicKey)
+            Services.Eligibility.waitForActivationMessage(publicKey)
         } catch (e) {
             console.error(e)
             setIsEligible(IS_ELIGIBLE_ENUM.NO);

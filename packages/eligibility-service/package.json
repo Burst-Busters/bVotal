@@ -9,6 +9,7 @@
     "dev:service": "nodemon src/index.js -- start",
     "dev:bootstrap": "node src/index.js -- bootstrap TestCampaign",
     "dev:forge": "node src/index.js -- forgeBlock TestPhrase",
+    "dev:hash": "node src/index.js -- createHashes 10",
     "commands": "node src/index.js -- help"
   },
   "dependencies": {

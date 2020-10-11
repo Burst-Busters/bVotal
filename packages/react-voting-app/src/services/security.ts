@@ -30,6 +30,10 @@ export const Security = {
         return decryptAES(encrypted, pin)
     },
     getHashId: (document: string, dateString: string) => {
+
+        console.log('hash1', hashId({id: document, dob: dateString}))
+        console.log('hash2', hashId({id: parseInt(document), dob: dateString}))
+
         return hashId({id: document, dob: dateString});
     },
 }

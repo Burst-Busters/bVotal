@@ -1,5 +1,5 @@
 const {program} = require('commander');
-const {start, bootstrap, forgeBlock} = require('./commands')
+const {start, bootstrap, forgeBlock, createHashes} = require('./commands')
 
 program
     .name('bvotal-service')
@@ -17,5 +17,9 @@ program.command('bootstrap <name>')
 program.command('forgeBlock <secretPhrase>')
     .description('Forges a block (only for local development)')
     .action(async secretPhrase => forgeBlock({secretPhrase}))
+
+program.command('createHashes [count]')
+    .description('Create a certain amount of elgibility hashes')
+    .action(count => createHashes({count}))
 
 program.parseAsync(process.argv);
