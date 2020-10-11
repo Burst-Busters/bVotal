@@ -18,7 +18,6 @@ const handleError = (fn) => async (req, res) => {
             const {output} = e
             message = JSON.stringify(output)
             res.statusCode = output.statusCode
-        }else{
         }
         logger.error(message)
         res.end(message)
