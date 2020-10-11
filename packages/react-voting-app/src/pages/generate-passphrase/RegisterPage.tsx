@@ -123,7 +123,18 @@ function RegisterPage() {
     const handleDocChange = (value: string) => setDocument(value);
     const handleFabClick = async () => {
         const {publicKey} = Services.Security.generateKeys(passphrase);
-        await doRegister(hashId, publicKey)
+        setLoading(true);
+        try {
+            const account = await Services.Eligibility.checkIfAccountExists(publicKey)
+           // TODO: check if has account
+        } catch (e) {
+            // TODO: what to do if errors?
+            console.error(`error checking if has account `, e);
+            await doRegister(hashId, publicKey)
+        }
+        finally {
+            setLoading(false);
+        }
 
     }
     const onChangedDate = (dateString: string) => {
