@@ -1,6 +1,6 @@
 const Boom = require('@hapi/boom')
 const {sendActivationMessage} = require("../blockchain");
-const {EligibleVoter, Campaign} = require("../database");
+const {ActivatedAccount, EligibleVoter, Campaign} = require("../database");
 const Config = require("../config")
 
 const register = async (req, res) => {
@@ -29,6 +29,15 @@ const register = async (req, res) => {
 
     // TODO: voting options are part of campaign --> bootstrapper needs to create'em
     const votingOptions = Config.VotingOptions
+
+    const activated = await ActivatedAccount.findOne({where: {recipientPublicKey}}); //here we need to use hashing
+
+    if (activated !== null) {
+        throw Boom.badRequest('Account activated already')
+    }
+
+    await ActivatedAccount.create({ hash: recipientPublicKey}); //here we need to use hashing
+
     await sendActivationMessage({
         recipientPublicKey,
         activationPassphrase,
