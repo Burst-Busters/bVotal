@@ -70,7 +70,7 @@ function VotePage() {
   const classes = useStyles();
   const history = useHistory();
   const [loading, setLoading] = useState(false);
-  const handleFabClick = () => alert(`voted!`);
+  const handleFabClick = () => history.push(`/thank-you`);
   const [checked, setChecked] = React.useState<VotingOption[]>([]);
 
   const handleToggle = (value: VotingOption) => () => {
