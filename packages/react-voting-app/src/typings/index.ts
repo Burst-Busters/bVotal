@@ -8,6 +8,12 @@ export type ActivationMessage = {
     vaddrs: VotingAddress
 }
 
+export enum ActivationState {
+    Pending,
+    True,
+    False,
+    TimeOut
+}
 
 export enum IS_ELIGIBLE_ENUM {
     FETCHING,
