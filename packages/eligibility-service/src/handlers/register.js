@@ -1,4 +1,5 @@
 const Boom = require('@hapi/boom')
+const {hashText} = require("@bvotal/common");
 const {sendActivationMessage} = require("../blockchain");
 const {ActivatedAccount, EligibleVoter, Campaign} = require("../database");
 
@@ -14,7 +15,8 @@ const register = async (req, res) => {
         throw Boom.badRequest('Registered already')
     }
 
-    const activated = await ActivatedAccount.findOne({where: {hash: recipientPublicKey}}); //here we need to use hashing
+    const hashedPubKey = hashText(recipientPublicKey)
+    const activated = await ActivatedAccount.findOne({where: {hash: hashedPubKey}});
 
     if (activated !== null) {
         throw Boom.badRequest('Account activated already')
@@ -36,7 +38,7 @@ const register = async (req, res) => {
         votingPassphrase
     })
 
-    await ActivatedAccount.create({ hash: recipientPublicKey}); //here we need to use hashing
+    await ActivatedAccount.create({ hash: hashedPubKey});
     await EligibleVoter.update({active: true}, {where: {hash}});
 
     res.end()
