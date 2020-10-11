@@ -28,7 +28,7 @@ const register = async (req, res) => {
         throw Boom.notFound('No campaign found')
     }
 
-    const {activationPassphrase, options, votingPassphrase, active} = campaigns[0].dataValues
+    const {activationPassphrase, options, votingPassphrase, active} = campaigns[0]
 
     if(!active){
         throw Boom.badRequest('Voting finished')
