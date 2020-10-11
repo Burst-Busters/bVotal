@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Avatar, Backdrop, Box, Button, Card, CardContent, CardMedia, Checkbox, Chip, CircularProgress, Divider, Fab, FormControl, IconButton, Input, InputAdornment, InputLabel, List, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText, makeStyles, OutlinedInput, Paper, TextField, Typography } from '@material-ui/core';
-import EditIcon from '@material-ui/icons/Edit';
+import { Avatar, Backdrop, Card, CardContent, Checkbox, CircularProgress, Fab, List, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText, makeStyles, Paper, Typography } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 const useStyles = makeStyles((theme) => ({
   VotePage: {
@@ -69,7 +68,7 @@ const VotingOptions: VotingOption[] = [
 function VotePage() {
   const classes = useStyles();
   const history = useHistory();
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
   const handleFabClick = () => history.push(`/thank-you`);
   const [checked, setChecked] = React.useState<VotingOption[]>([]);
 

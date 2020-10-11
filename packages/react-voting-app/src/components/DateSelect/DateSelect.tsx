@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Box, FormControl, InputLabel, makeStyles, MenuItem, Select } from "@material-ui/core";
 
 export interface DateSelectProps {
@@ -9,33 +9,42 @@ const useStyles = makeStyles((theme) => ({
       width: '100%',
       display: 'block',
       clear: 'both',
+      '& .MuiFormControl-root': {
+          minWidth: 120,
+      }
     },
 }))
 
 function DateSelect(props: DateSelectProps) {
     const classes = useStyles();
-    const [age, setAge] = React.useState('');
-    const handleChange = (event: any) => {
-      setAge(event.target.value);
+    const [month, setMonth] = React.useState('');
+    const [day, setDay] = React.useState('');
+    const [year, setYear] = React.useState('');
+    const handleDayChange = (event: any) => {
+      setDay(event.target.value);
     };
+    const handleYearChange = (event: any) => {
+        setYear(event.target.value);
+      };
+    const handleMonthChange = (event: any) => {
+        setMonth(event.target.value);
+      };
     
     return (
         <Box className={classes.dateWrapper}>
-            
         <FormControl variant="outlined">
             <InputLabel id="month-select-label">Month</InputLabel>
                 <Select
                     labelId="month-select-label"
                     id="month-select"
-                    value={age}
-                    onChange={handleChange}
+                    value={month}
+                    onChange={handleMonthChange}
+                    labelWidth={50}
                     >
                 <MenuItem value="">
                     <em>None</em>
                 </MenuItem>
-                <MenuItem value={10}>Ten</MenuItem>
-                <MenuItem value={20}>Twenty</MenuItem>
-                <MenuItem value={30}>Thirty</MenuItem>
+                    <MenuItem value={'January'}>Jenuary</MenuItem>
                 </Select>
             </FormControl>
             
@@ -44,15 +53,14 @@ function DateSelect(props: DateSelectProps) {
                 <Select
                     labelId="day-select-label"
                     id="day-select"
-                    value={age}
-                    onChange={handleChange}
+                    value={day}
+                    onChange={handleDayChange}
+                    labelWidth={30}
                     >
                 <MenuItem value="">
                     <em>None</em>
                 </MenuItem>
                 <MenuItem value={10}>1</MenuItem>
-                <MenuItem value={20}>2</MenuItem>
-                <MenuItem value={30}>3</MenuItem>
                 </Select>
             </FormControl>
 
@@ -61,15 +69,14 @@ function DateSelect(props: DateSelectProps) {
                 <Select
                     labelId="year-select-label"
                     id="year-select"
-                    value={age}
-                    onChange={handleChange}
+                    value={year}
+                    onChange={handleYearChange}
+                    labelWidth={30}
                     >
                 <MenuItem value="">
                     <em>None</em>
                 </MenuItem>
                 <MenuItem value={10}>1900</MenuItem>
-                <MenuItem value={20}>1901</MenuItem>
-                <MenuItem value={30}>1902</MenuItem>
                 </Select>
             </FormControl>
         </Box>
