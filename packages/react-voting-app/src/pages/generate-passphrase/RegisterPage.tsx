@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {
-    Backdrop, Button,
+    Backdrop,
+    Button,
     Card,
     CardContent,
     CircularProgress,
@@ -22,6 +23,14 @@ import {Security} from '../../services';
 import {formatDateToBurst} from '../../utils';
 import {IS_ELIGIBLE_ENUM} from "../../typings";
 import AssignmentReturnIcon from "@material-ui/icons/AssignmentReturn";
+
+
+function sleep(time: number): Promise<void> {
+    return new Promise((resolve) => {
+        setTimeout(resolve, time || 1000);
+    });
+}
+
 
 const useStyles = makeStyles((theme) => ({
     RegisterPage: {
@@ -98,18 +107,10 @@ function RegisterPage() {
     const [hashId, setHashId] = useState<string>('');
     const [isEligible, setIsEligible] = useState<IS_ELIGIBLE_ENUM>(IS_ELIGIBLE_ENUM.PENDING);
 
-    useEffect(() => {
-        if(isEligible === IS_ELIGIBLE_ENUM.YES){
-            history.push({
-                pathname: `/create-pin`,
-                state: {passphrase, hashId},
-            })
-        }
-    }, [isEligible])
-
     const doRegister = async (hashId: string, publicKey: string) => {
         try {
             setLoading(true)
+            await sleep(2500) // fake delay
             await Services.Eligibility.register(hashId, publicKey);
             setIsEligible(IS_ELIGIBLE_ENUM.YES)
             return
@@ -131,11 +132,13 @@ function RegisterPage() {
             // TODO: what to do if errors?
             console.error(`error checking if has account `, e);
             await doRegister(hashId, publicKey)
+
         }
         finally {
             setLoading(false);
         }
 
+        
     }
     const onChangedDate = (dateString: string) => {
         setChosenDate(formatDateToBurst(dateString));
@@ -146,7 +149,18 @@ function RegisterPage() {
         const phrase = await Security.generatePassphrase(newHashId);
         setHashId(newHashId);
         setPassphrase(phrase);
+        const {publicKey} = Services.Security.generateKeys(passphrase);
+        await doRegister(newHashId, publicKey)
     }
+    
+    useEffect(() => {
+        if (isEligible === IS_ELIGIBLE_ENUM.YES) {
+            history.push({
+                pathname: `/create-pin`,
+                state: {passphrase, hashId},
+            })
+        }
+    }, [isEligible])
 
     return (
         <div className={classes.RegisterPage}>
@@ -173,13 +187,14 @@ function RegisterPage() {
                                     href="/"
                                     color="secondary"
                                     className={classes.backButton}
-                                    startIcon={<AssignmentReturnIcon />}
+                                    startIcon={<AssignmentReturnIcon/>}
                                 >
                                     Go Back
                                 </Button>
                             </CardContent>
                         }
-                        { isEligible === IS_ELIGIBLE_ENUM.PENDING &&
+                        {
+                            isEligible === IS_ELIGIBLE_ENUM.PENDING &&
                             <CardContent>
                                 <Typography component="p" variant="body2" align="center">
                                     Input your date of birth and document number to get started:
@@ -204,15 +219,29 @@ function RegisterPage() {
                                                                 document={document}/>
                                 </FormControl>
                                 <Backdrop className={classes.backdrop} open={loading}>
+                                    <Typography variant="h2" align="center">
+                                        Checking Eligibility
+                                    </Typography>
                                     <CircularProgress color="inherit"/>
                                 </Backdrop>
+                            </CardContent>
+                        }
+                        {
+                            isEligible === IS_ELIGIBLE_ENUM.YES &&
+                            <CardContent>
+                                <Typography component="h2" variant="h5" align="center">
+                                    You are eligible for voting.
+                                </Typography>
+                                <Typography component="p" variant="body2" align="center">
+                                    Please proceed to next step.
+                                </Typography>
                             </CardContent>
                         }
                     </div>
                 </Card>
                 <Fab
                     onClick={handleFabClick}
-                    disabled={passphrase.length === 0}
+                    disabled={isEligible !== IS_ELIGIBLE_ENUM.YES}
                     className={classes.fab} size="large"
                     color="secondary"
                     aria-label="go">
