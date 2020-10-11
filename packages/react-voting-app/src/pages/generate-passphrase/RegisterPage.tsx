@@ -79,16 +79,19 @@ function RegisterPage() {
   const onChangedDate = (dateString: string) => {
     setChosenDate(dateString);
   }
-  const handleConfirm = () => {
-      setLoading(true);
-      const hashId = api.getHashId(document!, chosenDate!);
-      console.log(`hashId ${hashId}`);
-      setTimeout(() => {
+  const handleConfirm = async () => {
+    try {
+        setLoading(true);
+        const hashId = api.getHashId(document!, chosenDate!);
+        const phrase = await api.getPassphrase(hashId);
+        setPassphrase(phrase);
+      } catch(e) {
+        console.error('Error generating passphrase ', e);
+        alert('Error generating passphrase. Please try again');
+      } finally {
         setLoading(false);
-        setPassphrase([`example`, `pass`, `phrase`, `with`, `some`, `words`, `2example`, `2pass`, `2phrase`, `2with`, `2some`, `2words`])
-      }, 1000);
+      }
   }
-
 
   return (
     <div className={classes.RegisterPage}>
