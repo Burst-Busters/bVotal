@@ -10,6 +10,7 @@ import ErrorPage from './pages/error/ErrorPage';
 //Custom CSS
 import "./style/custom.css";
 import RegisterPage from './pages/generate-passphrase/RegisterPage';
+import WaitingActivationPage from './pages/waiting-activation/WaitingActivationPage';
 
 function App() {
 
@@ -26,6 +27,7 @@ function App() {
           <Route path="/" exact component={StartPage} />
           <Route path="/register" exact component={RegisterPage} />
           <Route path="/create-pin" exact component={CreatePinPage} />
+          <Route path="/waiting-activation" exact component={WaitingActivationPage} />
           <Route path="/vote" exact component={VotePage} />
           <Route path="/thank-you" exact component={ThankYouPage} />
           <Route path="/error" exact component={ErrorPage} />
