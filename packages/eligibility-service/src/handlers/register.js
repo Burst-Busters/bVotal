@@ -4,20 +4,22 @@ const {sendActivationMessage} = require("../blockchain");
 const {ActivatedAccount, EligibleVoter, Campaign} = require("../database");
 
 const register = async (req, res) => {
-    const {hash, pub : recipientPublicKey} = req.body;
+  
+    const {hash, pub: recipientPublicKey} = req.body; 
+  
     const voter = await EligibleVoter.findOne({where: {hash}});
-
     if (voter === null) {
-        throw Boom.notFound('Not eligible')
+        throw Boom.notFound('Not eligible');
     }
-
+    
     if (voter.active) {
         throw Boom.badRequest('Registered already')
     }
 
-    const hashedPubKey = hashText(recipientPublicKey)
-    const activated = await ActivatedAccount.findOne({where: {hash: hashedPubKey}});
+    const hashedPubKey = hashText(recipientPublicKey);
 
+    const activated = await ActivatedAccount.findOne({where: {hash: hashedPubKey}});
+  
     if (activated !== null) {
         throw Boom.badRequest('Account activated already')
     }
