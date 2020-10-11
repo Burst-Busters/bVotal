@@ -12,8 +12,14 @@ const handleError = (fn) => async (req, res) => {
     try {
         return await fn(req, res)
     } catch (e) {
-        const {output} = e
-        const message = JSON.stringify(output)
+        let message = e.message
+        res.statusCode = 500
+        if(e.isBoom){
+            const {output} = e
+            message = JSON.stringify(output)
+            res.statusCode = output.statusCode
+        }else{
+        }
         logger.error(message)
         res.end(message)
     }
