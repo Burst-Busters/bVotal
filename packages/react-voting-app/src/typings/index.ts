@@ -10,9 +10,7 @@ export type ActivationMessage = {
 
 export enum ActivationState {
     Pending,
-    True,
-    False,
-    TimeOut
+    Activated
 }
 
 export enum IS_ELIGIBLE_ENUM {

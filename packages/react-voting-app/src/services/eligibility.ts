@@ -1,27 +1,61 @@
 import {HttpImpl, HttpResponse} from "@burstjs/http"
 import {getAccountIdFromPublicKey} from "@burstjs/crypto"
-import {composeApi, ApiSettings, TransactionType, TransactionArbitrarySubtype, Transaction} from "@burstjs/core"
-import {ActivationState} from "../typings";
+import {
+    ApiSettings,
+    composeApi,
+    isAttachmentVersion,
+    Transaction,
+    TransactionArbitrarySubtype,
+    TransactionType
+} from "@burstjs/core"
+import {ActivationMessage, ActivationState, VotingOption} from "../typings";
 
 const http = new HttpImpl('http://localhost:3001/api')
-const BurstApi = composeApi(new ApiSettings( 'http://localhost:6786'))
+const BurstApi = composeApi(new ApiSettings('http://localhost:6786'))
 
 const Seconds = 1000
-const ActivationCheck = 'a'
-let interval = null
 
-async function checkForActivationMessage(publicKey){
- const accountId = getAccountIdFromPublicKey(publicKey)
+const VotingOptionsKey = 'vopts'
+const VotingAddressKey = 'vaddr'
+
+let interval: NodeJS.Timeout
+
+function getMessageText(transaction: Transaction) {
+    return isAttachmentVersion(transaction, 'EncryptedMessage')
+        ? null
+        : transaction.attachment.message;
+}
+
+function storeVotingOptions(vopts: VotingOption[]): void {
+    localStorage.setItem(VotingOptionsKey, JSON.stringify(vopts))
+}
+
+function storeVotingAddress(vaddrs: string): void {
+    localStorage.setItem(VotingAddressKey, vaddrs)
+}
+
+async function checkForActivationMessage(publicKey: string): Promise<void> {
+    const accountId = getAccountIdFromPublicKey(publicKey)
     const {transactions} = await BurstApi.account.getAccountTransactions({
         accountId,
         type: TransactionType.Arbitrary,
         subtype: TransactionArbitrarySubtype.Message
     })
-    // ideally sort by timestamp
-    transactions.filter( ({sender,attachment}: Transaction) => {
-        // TODO: get the voting address
-        sender === "VotingAddress"
-    })
+    if (!transactions.length) {
+        let message = '';
+        for (let i = 0; i < transactions.length; i++) {
+            try {
+                message = getMessageText(transactions[i]);
+                if (!message) continue
+                const {vopts, vaddrs} = JSON.parse(message) as ActivationMessage;
+                if (!vopts && !vaddrs) throw new Error('Incompatible')
+                storeVotingOptions(vopts)
+                storeVotingAddress(vaddrs)
+            } catch (e) {
+                console.debug('Incompatible message', message)
+            }
+        }
+    }
 }
 
 export const Eligibility = {
@@ -31,24 +65,28 @@ export const Eligibility = {
             pub: publicKey
         })
     },
+    getVotingOptions: (): VotingOption[] | null => {
+        const vopts = localStorage.getItem(VotingOptionsKey);
+        return vopts ? JSON.parse(vopts) : null
+    },
+    getVotingAddress: (): string | null => {
+        return localStorage.getItem(VotingAddressKey);
+    },
     getActivationState: () => {
-        const timestamp = window.localStorage.getItem(ActivationCheck)
-        if(!timestamp) return ActivationState.Pending
-        // Probably we won't need it, because we check for campaign end
+        if (!Eligibility.getVotingAddress()) return ActivationState.Pending
+        return ActivationState.Activated
     },
     waitForActivationMessage: async (publicKey: string) => {
-
-        if(this.getActivationState() === ActivationState.Pending){
-            window.localStorage.setItem(ActivationCheck, Date.now().toString())
-        }
         // TODO: improve polling later
-        if(interval){
+        if (interval) {
             clearInterval(interval)
         }
-        return new Promise.resolve((resolve) => {
+        return new Promise((resolve) => {
             interval = setInterval(() => {
-                checkForActivationMessage(publicKey)
-
+                checkForActivationMessage(publicKey);
+                if(Eligibility.getActivationState() === ActivationState.Activated){
+                    // TODO: send custom event
+                }
             }, 30 * Seconds)
         })
     }
