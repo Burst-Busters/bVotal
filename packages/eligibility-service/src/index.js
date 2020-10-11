@@ -1,19 +1,21 @@
-const polka = require('polka')
-const {middlewares} = require('./middlewares')
-const {register, showEligibles} = require('./handlers')
-const Database = require("./database");
-const Config = require("./config");
+const {program} = require('commander');
+const {start, bootstrap, forgeBlock} = require('./commands')
 
-const api = url => `api/${url}`;
+program
+    .name('bvotal-service')
 
-(async () => {
-    await Database.initialize({reset: Config.IsDebugMode})
-    polka()
-        .use(...middlewares)
-        .post(api('register'), register)
-        .get(api('showEligibles'), showEligibles)
-        .listen(Config.ServicePort, err => {
-            console.log('Listening to localhost:', Config.ServicePort)
-            if (err) console.log('error', err)
-        })
-})()
+program
+    .command('start [options]')
+    .description('Starts the Eligibility Service')
+    .action(start)
+
+// TODO more args here
+program.command('bootstrap <name>')
+    .description('Bootstraps a new election campaign')
+    .action(async name => bootstrap({name}))
+
+program.command('forgeBlock <secretPhrase>')
+    .description('Forges a block (only for local development)')
+    .action(async secretPhrase => forgeBlock({secretPhrase}))
+
+program.parseAsync(process.argv);

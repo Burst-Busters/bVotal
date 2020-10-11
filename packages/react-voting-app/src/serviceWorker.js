@@ -27,7 +27,7 @@ export function register(config) {
     if (publicUrl.origin !== window.location.origin) {
       // Our service worker won't work if PUBLIC_URL is on a different origin
       // from what our page is served on. This might happen if a CDN is used to
-      // serve assets; see https://github.com/facebook/create-react-app/issues/2374
+      // start assets; see https://github.com/facebook/create-react-app/issues/2374
       return;
     }
 
@@ -67,7 +67,7 @@ function registerValidSW(swUrl, config) {
           if (installingWorker.state === 'installed') {
             if (navigator.serviceWorker.controller) {
               // At this point, the updated precached content has been fetched,
-              // but the previous service worker will still serve the older
+              // but the previous service worker will still start the older
               // content until all client tabs are closed.
               console.log(
                 'New content is available and will be used when all ' +

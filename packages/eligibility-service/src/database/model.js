@@ -1,14 +1,16 @@
 const {Sequelize, DataTypes} = require("sequelize");
 const Config = require("../config")
+const {logger} = require("../logger");
 
 const sequelize = new Sequelize({
     dialect: "sqlite",
     storage: Config.DatabasePath,
+    logging: sql => logger.debug(sql)
 });
 
 
-const Voter = sequelize.define(
-    "Voter",
+const EligibleVoter = sequelize.define(
+    "EligibleVoter",
     {
         hash: {
             type: DataTypes.STRING,
@@ -20,25 +22,22 @@ const Voter = sequelize.define(
             defaultValue: false,
         },
     },
-    {
-        // Other model options go here
-    }
 );
 
-const Event = sequelize.define(
-    "Event",
+const Campaign = sequelize.define(
+    "Campaign",
     {
         name: {
             type: DataTypes.STRING,
             allowNull: false,
             unique: true
         },
-        activatePass: {
+        activationPassphrase: {
             type: DataTypes.STRING,
             allowNull: false,
             unique: true
         },
-        votingPass: {
+        votingPassphrase: {
             type: DataTypes.STRING,
             allowNull: false,
             unique: true
@@ -48,6 +47,6 @@ const Event = sequelize.define(
 
 module.exports = {
     sequelize,
-    Voter,
-    Event
+    EligibleVoter,
+    Campaign
 }

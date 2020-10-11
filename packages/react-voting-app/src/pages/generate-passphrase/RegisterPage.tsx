@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import {FormattedMessage } from 'react-intl';
-import {hashId} from '@bvotal/common'
-import { Backdrop, Box, Button, Card, CardContent, CardMedia, Chip, CircularProgress, Divider, Fab, FormControl, IconButton, Input, InputAdornment, InputLabel, List, ListItem, ListItemText, makeStyles, OutlinedInput, Paper, TextField, Typography } from '@material-ui/core';
-import PhoneIphoneIcon from '@material-ui/icons/PhoneIphone';
+import { Backdrop, Box, Button, Card, CardContent, Chip, CircularProgress, Fab, FormControl, InputAdornment, InputLabel, makeStyles, OutlinedInput, Paper, Typography } from '@material-ui/core';
+import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import { useHistory } from 'react-router-dom';
+import DateSelect from '../../components/DateSelect/DateSelect';
 const useStyles = makeStyles((theme) => ({
-  GeneratePassphrasePage: {
+  RegisterPage: {
     width: 'auto',
     marginLeft: theme.spacing(2),
     marginRight: theme.spacing(2),
@@ -31,8 +30,9 @@ const useStyles = makeStyles((theme) => ({
     textAlign: `left`,
     marginTop: theme.spacing(2),
   },
-  phoneInput: {
+  docInput: {
     marginTop: theme.spacing(6),
+    width: 360
   },
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
@@ -64,13 +64,16 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(2),
   }
 }))
-function GeneratePassphrasePage() {
+function RegisterPage() {
   const classes = useStyles();
   const history = useHistory();
   const [loading, setLoading] = useState(false);
   const [passphrase, setPassphrase] = useState<string[]>([]);
-  const handlePhoneChange = (value: string) => console.log(`phone is ${value}`)
+  const handledocChange = (value: string) => console.log(`doc is ${value}`)
   const handleFabClick = () => history.push(`/create-pin`)
+  const onChangedDate = (dateString: string) => {
+    console.log(`changed date ${dateString}`);
+  }
   const handleGenerateButton = () => {
       setLoading(true);
       setTimeout(() => {
@@ -79,35 +82,35 @@ function GeneratePassphrasePage() {
       }, 1000);
   }
 
-  const hash = hashId({id:'1244', dob:'12-12-2345'})
 
   return (
-    <div className={classes.GeneratePassphrasePage}>
+    <div className={classes.RegisterPage}>
       <Paper className={classes.paper}>
           <Typography component="h1" variant="h5" align="center">
           <Fab size="medium" disabled color="primary" aria-label="1">
               1
-            </Fab> Generate your passphrase
+            </Fab> Create your Account
           </Typography>
             <Card className={classes.card}>
               <div className={classes.cardDetails}>
                 <CardContent>
                    <Typography component="p" variant="body2" align="center">
-                        Input your phone number and generate a custom passphrase.
+                        Input your date of birth and document number to get started:
                     </Typography>
-                    <FormControl className={classes.phoneInput} variant="outlined">
-                    <InputLabel htmlFor="outline-phone">phone</InputLabel>
-                    <OutlinedInput
-                        id="outline-phone"
-                        type={'text'}
-                        onChange={e => handlePhoneChange(e.target.value)}
-                        labelWidth={45}
-                        endAdornment={
-                        <InputAdornment position="end">
-                            <PhoneIphoneIcon />
-                        </InputAdornment>
-                        }
-                    />
+                    <DateSelect onChange={onChangedDate} />
+                    <FormControl className={classes.docInput} variant="outlined">
+                      <InputLabel htmlFor="outline-doc">National Identification Number</InputLabel>
+                      <OutlinedInput
+                          id="outline-doc"
+                          type={'text'}
+                          onChange={e => handledocChange(e.target.value)}
+                          labelWidth={145}
+                          endAdornment={
+                          <InputAdornment position="end">
+                              <AssignmentIndIcon />
+                          </InputAdornment>
+                          }
+                      />
                     </FormControl>
                     <FormControl className={classes.buttonInput}>
                         <Button disabled={passphrase.length > 0} onClick={handleGenerateButton} variant="outlined" color="primary">
@@ -144,4 +147,4 @@ function GeneratePassphrasePage() {
   );
 }
 
-export default GeneratePassphrasePage;
+export default RegisterPage;

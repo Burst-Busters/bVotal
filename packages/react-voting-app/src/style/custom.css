@@ -1,0 +1,25 @@
+/*Body*/
+body{
+    background-color: #f6f7fd!important;
+}
+/*Box_SHadow*/
+.box_shadow{
+    box-shadow: 1px 2px 6px 0 #3333330d!important;
+}
+.MuiPaper-elevation1 {
+    box-shadow: none!important;
+}
+/*MuiChip-root*/
+.MuiChip-root{
+    background-color: #48C6AC!important;
+    color: #fff!important;
+}
+/*Checkbox*/
+.MuiCheckbox-colorSecondary.Mui-checked {
+    color:  #48C6AC!important
+}
+/*calendar*/
+.MuiFormControl-root {
+    margin-top: 9px!important;
+    min-width: 120px!important;
+}
