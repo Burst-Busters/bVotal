@@ -6,17 +6,20 @@ import { AppBar, CssBaseline, Toolbar, Typography } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import GeneratePassphrasePage from './pages/generate-passphrase/GeneratePassphrasePage';
 import CreatePinPage from './pages/create-pin/CreatePinPage';
+import VotePage from './pages/vote/VotePage';
+import ThankYouPage from './pages/thankyou/ThankYouPage';
+import ErrorPage from './pages/error/ErrorPage';
+//Custom CSS
+import "./style/custom.css";
+
 function App() {
 
   return (
     <div className="App">
       <CssBaseline />
-      <AppBar position="relative">
+      <AppBar color="inherit" className="box_shadow" position="relative">
         <Toolbar>
-          <MenuIcon />
-          <Typography variant="h6" color="inherit" noWrap>
-            bVote
-          </Typography>
+          <img style={{maxHeight: 30 }} src="bvotal-logo.png" />
         </Toolbar>
       </AppBar>
       <main>
@@ -24,6 +27,9 @@ function App() {
           <Route path="/" exact component={StartPage} />
           <Route path="/generate-passphrase" exact component={GeneratePassphrasePage} />
           <Route path="/create-pin" exact component={CreatePinPage} />
+          <Route path="/vote" exact component={VotePage} />
+          <Route path="/thank-you" exact component={ThankYouPage} />
+          <Route path="/error" exact component={ErrorPage} />
           <Route path='/default' render={() => <Redirect to= "/" />} />
         </Switch>
       </main>

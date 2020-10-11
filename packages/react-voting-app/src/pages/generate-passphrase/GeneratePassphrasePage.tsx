@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import {FormattedMessage } from 'react-intl';
 import {hashId} from '@bvotal/common'
-import { Backdrop, Box, Button, Card, CardContent, CardMedia, Chip, CircularProgress, Divider, Fab, FormControl, IconButton, Input, InputAdornment, InputLabel, List, ListItem, ListItemText, makeStyles, OutlinedInput, Paper, TextField, Typography } from '@material-ui/core';
+import { Backdrop, Box, Button, Card, CardContent, CardMedia, Chip, CircularProgress, Divider, Fab, FormControl, IconButton, Input, InputAdornment, InputLabel, List, ListItem, ListItemText, makeStyles, MenuItem, OutlinedInput, Paper, Select, TextField, Typography } from '@material-ui/core';
 import PhoneIphoneIcon from '@material-ui/icons/PhoneIphone';
 import { useHistory } from 'react-router-dom';
+import DateSelect from '../../components/DateSelect/DateSelect';
 const useStyles = makeStyles((theme) => ({
   GeneratePassphrasePage: {
     width: 'auto',
@@ -69,6 +70,10 @@ function GeneratePassphrasePage() {
   const history = useHistory();
   const [loading, setLoading] = useState(false);
   const [passphrase, setPassphrase] = useState<string[]>([]);
+  const [age, setAge] = React.useState('');
+  const handleChange = (event: any) => {
+    setAge(event.target.value);
+  };
   const handlePhoneChange = (value: string) => console.log(`phone is ${value}`)
   const handleFabClick = () => history.push(`/create-pin`)
   const handleGenerateButton = () => {
@@ -87,7 +92,7 @@ function GeneratePassphrasePage() {
           <Typography component="h1" variant="h5" align="center">
           <Fab size="medium" disabled color="primary" aria-label="1">
               1
-            </Fab> Generate your passphrase
+            </Fab> Create your Account
           </Typography>
             <Card className={classes.card}>
               <div className={classes.cardDetails}>
@@ -95,19 +100,20 @@ function GeneratePassphrasePage() {
                    <Typography component="p" variant="body2" align="center">
                         Input your phone number and generate a custom passphrase.
                     </Typography>
+                    <DateSelect />
                     <FormControl className={classes.phoneInput} variant="outlined">
-                    <InputLabel htmlFor="outline-phone">phone</InputLabel>
-                    <OutlinedInput
-                        id="outline-phone"
-                        type={'text'}
-                        onChange={e => handlePhoneChange(e.target.value)}
-                        labelWidth={45}
-                        endAdornment={
-                        <InputAdornment position="end">
-                            <PhoneIphoneIcon />
-                        </InputAdornment>
-                        }
-                    />
+                      <InputLabel htmlFor="outline-phone">phone</InputLabel>
+                      <OutlinedInput
+                          id="outline-phone"
+                          type={'text'}
+                          onChange={e => handlePhoneChange(e.target.value)}
+                          labelWidth={45}
+                          endAdornment={
+                          <InputAdornment position="end">
+                              <PhoneIphoneIcon />
+                          </InputAdornment>
+                          }
+                      />
                     </FormControl>
                     <FormControl className={classes.buttonInput}>
                         <Button disabled={passphrase.length > 0} onClick={handleGenerateButton} variant="outlined" color="primary">
