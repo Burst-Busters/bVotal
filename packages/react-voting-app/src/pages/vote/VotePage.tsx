@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Avatar, Backdrop, Card, CardContent, Checkbox, CircularProgress, Fab, List, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText, makeStyles, Paper, Typography } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
+import { VotingAddress, VotingOption as ApiVotingOption } from '../../services/api';
 const useStyles = makeStyles((theme) => ({
   VotePage: {
     width: 'auto',
@@ -65,9 +66,21 @@ const VotingOptions: VotingOption[] = [
     {key: 4, title: "Option 4", description: "This guy is against Option 1"},
 ]
 
-function VotePage() {
+export type VotePageProps = {
+  location: {
+    state: {
+      votingOptions: ApiVotingOption[],
+      votingAddress: VotingAddress,
+    }
+  }
+}
+
+function VotePage(props: VotePageProps) {
   const classes = useStyles();
+  const { location } = props;
   const history = useHistory();
+  const passphrase = location.state.votingOptions;
+  const hashId = location.state.votingAddress;
   const [loading] = useState(false);
   const handleFabClick = () => history.push(`/thank-you`);
   const [checked, setChecked] = React.useState<VotingOption[]>([]);

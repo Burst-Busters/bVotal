@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Backdrop, Button, Card, CardContent, CircularProgress, Fab, FormControl, InputAdornment, InputLabel, makeStyles, OutlinedInput, Paper, Typography } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import { useHistory } from 'react-router-dom';
-import api from '../../services/api';
+import api, { VotingOption } from '../../services/api';
 
 const useStyles = makeStyles((theme) => ({
   CreatePinPage: {
@@ -88,11 +88,15 @@ function CreatePinPage(props: CreatePinPageProps) {
   const [pin, setPin] = useState<string>();
   const [publicKey, setPublicKey] = useState<string>();
   const [validPin, setValidPin] = useState(false);
+  const [votingOptions, setVotingOptions] = useState<VotingOption[]>();
+  const [votingAddress, setVotingAddress] = useState<string>();
   const [isPinCreated, setIsPinCreated] = useState(false);
 
   const doRegister = async (hashId: string, publicKey: string) => {
     const activationMessage = await api.register(hashId, publicKey);
     console.log('registerResponse ', activationMessage);
+    setVotingOptions(activationMessage.vopts);
+    setVotingAddress(activationMessage.vaddrs);
   }
 
   useEffect(() => {
@@ -127,7 +131,19 @@ function CreatePinPage(props: CreatePinPageProps) {
       }, 1000);
   }
 
-  const handleFabClick = () => history.push(`/vote`);
+  const handleFabClick = () => {
+    if (!passphrase || !pin) return;
+
+    const encripted = api.encriptPassphrase(passphrase, pin);
+    window.localStorage.setItem('encriptPassphrase', encripted);
+    history.push({
+      pathname: `/vote`,
+      state: {
+        votingOptions,
+        votingAddress,
+      }
+    });
+  }
 
 
   return (

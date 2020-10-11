@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { hashId } from '@bvotal/common';
-import { generateMasterKeys, PassPhraseGenerator } from '@burstjs/crypto';
+import { generateMasterKeys, PassPhraseGenerator, encryptAES } from '@burstjs/crypto';
 const eaBaseUrl = `http://localhost:3000/api`;
 
 const eaApi = axios.create({
@@ -21,6 +21,10 @@ const api = {
         const seed = hashId + random;
         const generator = new PassPhraseGenerator();
         return await generator.generatePassPhrase(Array.from(seed))
+    },
+    encriptPassphrase: (passphrase: string[], pin: string) => {
+        const encripted = encryptAES(passphrase.join(' '), pin);
+        return encripted;
     },
     getHashId: (document: string, dateString: string) => {
         return hashId({id: document, dob: dateString});
