@@ -6,6 +6,8 @@ const {
     getAccountIdFromPublicKey
 } = require("@burstjs/crypto");
 
+const {VotingOptions} = require("../../config")
+
 const {EligibleVoters} = require("./mockedEligibleVoters");
 const {getAccountBalance} = require('../../blockchain')
 
@@ -15,14 +17,14 @@ class Bootstrapper {
         this._context = context
     }
 
-    static async #createRandomPassphrase() {
+    static async _createRandomPassphrase() {
         const seed = crypto.randomBytes(256)
         const generator = new PassPhraseGenerator();
         const words = await generator.generatePassPhrase(Array.from(seed));
         return words.join(" ")
     }
 
-    async #premine({passphrase, minimumElectionFund}) {
+    async _premine({passphrase, minimumElectionFund}) {
         const {Logger} = this._context
         Logger.info(`Premining campaign fund...Goal: ${minimumElectionFund}`)
         const {publicKey} = generateMasterKeys(passphrase)
@@ -36,7 +38,7 @@ class Bootstrapper {
         }
     }
 
-    async #initializeCampaignData({activationPassphrase, votingPassphrase}) {
+    async _initializeCampaignData({activationPassphrase, votingPassphrase}) {
         const {Database, Logger} = this._context
         await Database.open()
         await Database.reset()
@@ -44,23 +46,30 @@ class Bootstrapper {
         await Database.Campaign.create({
             name: this._campaignName,
             activationPassphrase,
-            votingPassphrase
+            votingPassphrase,
+            options: JSON.stringify(VotingOptions)
         })
         Logger.info(`Loading eligible voters...`)
         await Database.EligibleVoter.bulkCreate(EligibleVoters, {individualHooks: true})
-        Logger.info(`Loaded ${numberVoters} eligible voters`)
         const numberVoters = await Database.EligibleVoter.count();
+        Logger.info(`Loaded ${numberVoters} eligible voters`)
         return numberVoters
     }
 
     async run() {
         const {Logger, Config} = this._context
-        Logger.info(`Bootstrapping...`)
-        const activationPassphrase = await Bootstrapper.#createRandomPassphrase()
-        const votingPassphrase = await Bootstrapper.#createRandomPassphrase()
-        const numberVoters = this.#initializeCampaignData({activationPassphrase, votingPassphrase})
-        const minimumElectionFund = BurstValue.fromBurst(numberVoters * Config.VoterFundBurst);
-        await this.#premine({passphrase: activationPassphrase, minimumElectionFund})
+        try {
+            Logger.info(`Bootstrapping...`)
+            const activationPassphrase = await Bootstrapper._createRandomPassphrase()
+            const votingPassphrase = await Bootstrapper._createRandomPassphrase()
+            const numberVoters = await this._initializeCampaignData({activationPassphrase, votingPassphrase})
+            const neededFund = numberVoters * parseFloat(Config.VoterFundBurst);
+            const minimumElectionFund = BurstValue.fromBurst(neededFund)
+            await this._premine({passphrase: activationPassphrase, minimumElectionFund})
+        } catch (e) {
+            Logger.error(`Bootstrapping failed: ${e}`)
+            throw e
+        }
     }
 
     static async run({campaignName, context}) {

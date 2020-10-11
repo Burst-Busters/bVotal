@@ -8,9 +8,6 @@ onShutdown("bootstrapper", async function () {
 
 async function bootstrap({name}) {
     try {
-        // TODO: pass into database
-        const votingOptions = []
-
         return await Bootstrapper.run({
             campaignName: name,
             context: Context
