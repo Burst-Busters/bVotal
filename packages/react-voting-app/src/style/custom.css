@@ -1,0 +1,7 @@
+/*Box_SHadow*/
+.box_shadow{
+    box-shadow: 1px 2px 6px 0 #3333330d!important;
+}
+.MuiPaper-elevation1 {
+    box-shadow: none!important;
+}

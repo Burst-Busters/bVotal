@@ -9,14 +9,17 @@ import CreatePinPage from './pages/create-pin/CreatePinPage';
 import VotePage from './pages/vote/VotePage';
 import ThankYouPage from './pages/thankyou/ThankYouPage';
 import ErrorPage from './pages/error/ErrorPage';
+//Custom CSS
+import "./style/custom.css";
+
 function App() {
 
   return (
     <div className="App">
       <CssBaseline />
-      <AppBar color="inherit" position="relative">
+      <AppBar color="inherit" className="box_shadow" position="relative">
         <Toolbar>
-          <img style={{maxHeight: 35 }} src="bvotal-logo.png" />
+          <img style={{maxHeight: 30 }} src="bvotal-logo.png" />
         </Toolbar>
       </AppBar>
       <main>
