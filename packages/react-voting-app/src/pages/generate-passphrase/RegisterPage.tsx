@@ -73,7 +73,7 @@ function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const [chosenDate, setChosenDate] = useState<string>();
   const [document, setDocument] = useState<string>();
-  const [passphrase, setPassphrase] = useState<string[]>([]);
+  const [passphrase, setPassphrase] = useState<string>('');
   const [hashId, setHashId] = useState<string>();
   
   const handleDocChange = (value: string) => setDocument(value);
@@ -89,7 +89,7 @@ function RegisterPage() {
         setLoading(true);
         const newHashId = api.getHashId(document!, chosenDate!);
         setHashId(newHashId);
-        const phrase = await api.getPassphrase(newHashId);
+        const phrase = await api.generatePassphrase(newHashId);
         setPassphrase(phrase);
       } catch(e) {
         console.error('Error generating passphrase ', e);
@@ -134,23 +134,12 @@ function RegisterPage() {
                     <Backdrop className={classes.backdrop} open={loading}>
                         <CircularProgress color="inherit" />
                     </Backdrop>
-                    <Box className={classes.passphraseStats} component="div" m={1}>
-                        {
-                            passphrase.map(word => (
-                                <Chip
-                                    className={classes.chip} 
-                                    key={word}
-                                    label={word}
-                                />
-                            ))
-                        }
-                    </Box>
                 </CardContent>
               </div>
             </Card>
             <Fab 
                 onClick={handleFabClick}
-                disabled={passphrase.length < 12} 
+                disabled={passphrase.length === 0}
                 className={classes.fab} size="large" 
                 color="secondary" 
                 aria-label="go">

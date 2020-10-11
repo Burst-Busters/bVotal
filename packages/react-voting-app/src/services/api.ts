@@ -1,30 +1,39 @@
 import axios from 'axios';
 import { hashId } from '@bvotal/common';
-import { generateMasterKeys, PassPhraseGenerator, encryptAES } from '@burstjs/crypto';
-const eaBaseUrl = `http://localhost:3000/api`;
+import { generateMasterKeys, PassPhraseGenerator, encryptAES, decryptAES } from '@burstjs/crypto';
+const eaBaseUrl = `http://localhost:3001/api`;
 
 const eaApi = axios.create({
     baseURL: eaBaseUrl,
 });
 
+const StorageKeys = {
+    Passphrase: 'p'
+}
+
 const api = {
-    getMasterKeys: (passphraseArray: string[]) => {
-        const passphrase = passphraseArray.join(' ');
+    getMasterKeys: (passphrase: string) => {
         return generateMasterKeys(passphrase);
     },
-    getRandom: () => {
-        const typedArray = new Uint32Array();
-        return window.crypto.getRandomValues(typedArray).join();
-    },
-    getPassphrase: async (hashId: string) => {
-        const random = api.getRandom();
+    generatePassphrase: async (hashId: string) => {
+        const typedArray = new Uint8Array(64);
+        const random = window.crypto.getRandomValues(typedArray).join();
         const seed = hashId + random;
         const generator = new PassPhraseGenerator();
-        return await generator.generatePassPhrase(Array.from(seed))
+        const words = await generator.generatePassPhrase(Array.from(seed))
+        return words.join(" ")
     },
-    encriptPassphrase: (passphrase: string[], pin: string) => {
-        const encripted = encryptAES(passphrase.join(' '), pin);
-        return encripted;
+    storePassphrase: (passphrase:string, pin:string): void => {
+        const encrypted =  encryptAES(passphrase, pin);
+        window.localStorage.setItem(StorageKeys.Passphrase, encrypted)
+    },
+    getPassphrase: (passphrase:string, pin:string): string => {
+        const encrypted = window.localStorage.getItem(StorageKeys.Passphrase);
+        if(!encrypted){
+            console.warn('Secured Passphrase not found')
+            return ''
+        }
+        return decryptAES(encrypted, pin)
     },
     getHashId: (document: string, dateString: string) => {
         return hashId({id: document, dob: dateString});
