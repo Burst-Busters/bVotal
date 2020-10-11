@@ -18,6 +18,7 @@ import {useHistory} from 'react-router-dom';
 import DateSelect from '../../components/DateSelect/DateSelect';
 import RegisterConfirmationDialog from '../../components/register-confirmation/RegisterConfirmationDialog';
 import {Security} from '../../services';
+import { formatDateToBurst } from '../../utils';
 
 const useStyles = makeStyles((theme) => ({
     RegisterPage: {
@@ -96,7 +97,8 @@ function RegisterPage() {
         state: {passphrase, hashId},
     })
     const onChangedDate = (dateString: string) => {
-        setChosenDate(dateString);
+        setChosenDate(formatDateToBurst(dateString));
+        console.log(formatDateToBurst(dateString));
     }
     const handleConfirm = async () => {
         try {
