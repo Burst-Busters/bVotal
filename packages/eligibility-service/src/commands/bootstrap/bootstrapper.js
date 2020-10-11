@@ -64,7 +64,7 @@ class Bootstrapper {
             const activationPassphrase = await Bootstrapper._createRandomPassphrase()
             const votingPassphrase = await Bootstrapper._createRandomPassphrase()
             const numberVoters = await this._initializeCampaignData({activationPassphrase, votingPassphrase})
-            const neededFund = numberVoters * parseFloat(Config.VoterFundBurst);
+            const neededFund = numberVoters * (parseFloat(Config.VoterFundBurst) + 0.147); //TODO, it is temp soliution
             const minimumElectionFund = BurstValue.fromBurst(neededFund)
             await this._premine({passphrase: activationPassphrase, minimumElectionFund})
         } catch (e) {

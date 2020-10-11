@@ -5,6 +5,10 @@ const Config = require('../config')
 const {logger} = require("../logger");
 const {BurstApi} = require("./burstApi")
 
+async function sleep(msec) {
+    return new Promise(resolve => setTimeout(resolve, msec));
+}
+
 async function sendActivationMessage({recipientPublicKey, activationPassphrase, votingOptions, votingPassphrase}) {
     logger.info(`Sending Activation Message to ${recipientPublicKey}`)
 
@@ -29,13 +33,15 @@ async function sendActivationMessage({recipientPublicKey, activationPassphrase, 
     await BurstApi.transaction.sendAmountToSingleRecipient({
         amountPlanck: BurstValue.fromBurst(Config.VoterFundBurst).getPlanck(),
         // TODO: take advantage of dynamic fee slot calculation
-        feePlanck: BurstValue.fromBurst(0.01).getPlanck(),
+        feePlanck: BurstValue.fromBurst(0.147).getPlanck(),
         senderPublicKey: senderKeys.publicKey,
         senderPrivateKey: senderKeys.signPrivateKey,
         recipientId,
         recipientPublicKey,
         attachment,
     });
+
+    await sleep(1000) //transactions must be unique, so transaction from same address with same timestamp dont go to same block
     }catch(e){
         console.log(e)
     }

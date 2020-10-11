@@ -1,4 +1,5 @@
 const rateLimit = require('express-rate-limit')
+const {IsDebugMode} = require("../config")
 
 const messageResponse = message => JSON.stringify({message})
 const isApiRequest = req => req.path.toLowerCase().startsWith('/api')
@@ -18,7 +19,7 @@ const serveApi = () => (req, res, next) => {
     if (isApiRequest(req)) {
         res.setHeader('Content-Type', 'application/json')
 
-        if (req.method.toUpperCase() !== 'GET') {
+        if (req.method.toUpperCase() !== 'GET' && !IsDebugMode) {
             limiter(req, res, next)
             return
         }
