@@ -47,7 +47,8 @@ class Bootstrapper {
             name: this._campaignName,
             activationPassphrase,
             votingPassphrase,
-            options: VotingOptions
+            options: VotingOptions,
+            active: true
         })
         Logger.info(`Loading eligible voters...`)
         await Database.EligibleVoter.bulkCreate(EligibleVoters, {individualHooks: true})
