@@ -16,7 +16,7 @@ const BurstApi = composeApi(new ApiSettings('http://localhost:6876'))
 const Seconds = 1000
 
 const VotingOptionsKey = 'vopts'
-const VotingAddressKey = 'vaddr'
+const VotingAddressKey = 'vpubk'
 
 let interval: NodeJS.Timeout
 
@@ -30,8 +30,8 @@ function storeVotingOptions(vopts: VotingOption[]): void {
     localStorage.setItem(VotingOptionsKey, JSON.stringify(vopts))
 }
 
-function storeVotingAddress(vaddrs: string): void {
-    localStorage.setItem(VotingAddressKey, vaddrs)
+function storeVotingPublicKey(vpubk: string): void {
+    localStorage.setItem(VotingAddressKey, vpubk)
 }
 
 async function checkForActivationMessage(publicKey: string): Promise<void> {
@@ -47,10 +47,10 @@ async function checkForActivationMessage(publicKey: string): Promise<void> {
             try {
                 message = getMessageText(transactions[i]);
                 if (!message) continue
-                const {vopts, vaddrs} = JSON.parse(message) as ActivationMessage;
-                if (!vopts && !vaddrs) throw new Error('Incompatible')
+                const {vopts, vpubk} = JSON.parse(message) as ActivationMessage;
+                if (!vopts && !vpubk) throw new Error()
                 storeVotingOptions(vopts)
-                storeVotingAddress(vaddrs)
+                storeVotingPublicKey(vpubk)
             } catch (e) {
                 console.debug('Incompatible message', message)
             }
@@ -58,7 +58,23 @@ async function checkForActivationMessage(publicKey: string): Promise<void> {
     }
 }
 
+
+function sendEncryptedVote(vote: VotingOption, pin: string): Promise<void> {
+    //
+    // BurstApi.account.getAccountBalance()
+    //
+    // BurstApi.message.sendEncryptedMessage({
+    //     feePlanck
+    // })
+    return Promise.resolve()
+}
+
 export const Eligibility = {
+    vote: async (vote: VotingOption, pin: string): Promise<void> => {
+        // TODO
+        console.log('Voting', vote)
+        return Promise.resolve()
+    },
     register: async (hashId: string, publicKey: string): Promise<HttpResponse> => {
         return http.post('/register', {
             hash: hashId,
@@ -69,11 +85,11 @@ export const Eligibility = {
         const vopts = localStorage.getItem(VotingOptionsKey);
         return vopts ? JSON.parse(vopts) : []
     },
-    getVotingAddress: (): string | null => {
+    getVotingPublicKey: (): string | null => {
         return localStorage.getItem(VotingAddressKey);
     },
     getActivationState: () => {
-        if (!Eligibility.getVotingAddress()) return ActivationState.Pending
+        if (!Eligibility.getVotingPublicKey()) return ActivationState.Pending
         return ActivationState.Activated
     },
     hasVoted: async (publicKey: string) => {

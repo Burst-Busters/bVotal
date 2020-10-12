@@ -80,7 +80,7 @@ function WaitingActivationPage(props: Props) {
         wait()
 
         function gotoVotingPage() {
-            const votingAddress = Eligibility.getVotingAddress();
+            const votingAddress = Eligibility.getVotingPublicKey();
             const votingOptions = Eligibility.getVotingOptions();
             history.push({
                 pathname: `/vote`,
