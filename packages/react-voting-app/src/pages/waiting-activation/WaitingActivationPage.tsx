@@ -1,10 +1,8 @@
 import React, {useEffect} from 'react';
 import {Card, CardActions, CardContent, makeStyles, Paper, Typography} from '@material-ui/core';
 import ReactLoading from "react-loading";
-import {Link, useHistory} from 'react-router-dom';
-import {CreatePinPageProps} from "../create-pin/CreatePinPage";
+import {useHistory} from 'react-router-dom';
 import {Eligibility} from "../../services";
-import {VotingAddress} from "../../typings";
 
 const useStyles = makeStyles((theme) => ({
     WaitingActivationPage: {
@@ -60,12 +58,6 @@ const useStyles = makeStyles((theme) => ({
         margin: '0 auto',
     },
 }))
-
-export type VotingOption = {
-    key: number;
-    title: string;
-    description: string;
-}
 
 type Props = {
     location: {
