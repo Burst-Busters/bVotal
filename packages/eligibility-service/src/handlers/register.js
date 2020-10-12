@@ -1,3 +1,4 @@
+const {generateMasterKeys} = require("@burstjs/crypto");
 const Boom = require('@hapi/boom')
 const {hashText} = require("@bvotal/common");
 const {sendActivationMessage} = require("../blockchain");
@@ -6,6 +7,7 @@ const {ActivatedAccount, EligibleVoter, Campaign} = require("../database");
 const register = async (req, res) => {
     try {
         const {hash, pub: recipientPublicKey} = req.body;
+
         // TODO: usa a json validator
         if (!(hash || pub)) {
             throw Boom.badRequest("hash,pub are required arguments")

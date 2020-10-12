@@ -107,10 +107,16 @@ function RegisterPage() {
     const [hashId, setHashId] = useState<string>('');
     const [isEligible, setIsEligible] = useState<IS_ELIGIBLE_ENUM>(IS_ELIGIBLE_ENUM.PENDING);
 
-    const doRegister = async (hashId: string, publicKey: string) => {
+
+
+    const verifyEligibility = async (hashId: string, publicKey: string) => {
         try {
             setLoading(true)
             await sleep(2500) // fake delay
+            const hasVoted = await Services.Eligibility.hasVoted(publicKey)
+            if(hasVoted){
+                throw new Error('You voted already')
+            }
             await Services.Eligibility.register(hashId, publicKey);
             setIsEligible(IS_ELIGIBLE_ENUM.YES)
             return
@@ -122,45 +128,27 @@ function RegisterPage() {
     }
 
     const handleDocChange = (value: string) => setDocument(value);
+
     const handleFabClick = async () => {
-        const {publicKey} = Services.Security.generateKeys(passphrase);
-        setLoading(true);
-        try {
-            const account = await Services.Eligibility.checkIfAccountExists(publicKey)
-           // TODO: check if has account
-        } catch (e) {
-            // TODO: what to do if errors?
-            console.error(`error checking if has account `, e);
-            await doRegister(hashId, publicKey)
-
-        }
-        finally {
-            setLoading(false);
-        }
-
-        
+        history.push({
+            pathname: `/create-pin`,
+            state: {passphrase, hashId},
+        })
     }
+
     const onChangedDate = (dateString: string) => {
         setChosenDate(formatDateToBurst(dateString));
         console.log(formatDateToBurst(dateString));
     }
+
     const handleConfirm = async () => {
         const newHashId = Security.getHashId(document!, chosenDate!);
-        const phrase = await Security.generatePassphrase(newHashId);
+        const newPhrase = await Security.generatePassphrase(newHashId);
         setHashId(newHashId);
-        setPassphrase(phrase);
-        const {publicKey} = Services.Security.generateKeys(passphrase);
-        await doRegister(newHashId, publicKey)
+        setPassphrase(newPhrase);
+        const {publicKey} = Services.Security.generateKeys(newPhrase);
+        await verifyEligibility(newHashId, publicKey)
     }
-    
-    useEffect(() => {
-        if (isEligible === IS_ELIGIBLE_ENUM.YES) {
-            history.push({
-                pathname: `/create-pin`,
-                state: {passphrase, hashId},
-            })
-        }
-    }, [isEligible])
 
     return (
         <div className={classes.RegisterPage}>

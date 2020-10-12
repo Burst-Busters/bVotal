@@ -106,8 +106,6 @@ function CreatePinPage(props: CreatePinPageProps) {
     const passphrase = location.state.passphrase;
     const [pin, setPin] = useState<string>();
     const [validPin, setValidPin] = useState(false);
-    const [votingOptions, setVotingOptions] = useState<VotingOption[]>();
-    const [votingAddress, setVotingAddress] = useState<string>();
 
     const handlePinChange = (pin: string) => {
         setPin(pin);
@@ -119,13 +117,12 @@ function CreatePinPage(props: CreatePinPageProps) {
     const handleFabClick = () => {
 
         Services.Security.storePassphrase(passphrase, pin!)
-
+        const {publicKey} = Services.Security.generateKeys(passphrase);
         // TODO: go to wating screen
         history.push({
-            pathname: `/vote`,
+            pathname: `/activation`,
             state: {
-                votingOptions,
-                votingAddress,
+                publicKey,
             }
         });
     }
@@ -136,7 +133,7 @@ function CreatePinPage(props: CreatePinPageProps) {
                 <Typography component="h1" variant="h5" align="center">
                     <Fab size="medium" disabled color="primary" aria-label="1">
                         2
-                    </Fab> Create your PIN
+                    </Fab> Define your Voting PIN
                 </Typography>
                 <Card className={classes.card}>
                     <div className={classes.cardDetails}>
@@ -160,7 +157,7 @@ function CreatePinPage(props: CreatePinPageProps) {
                             </FormControl>
                             <Typography className={classes.pinConfirmLabel} component="p" variant="body2"
                                         align="center">
-                                Confirm your PIN by typing it again bellow:
+                                Confirm your PIN by typing it again below:
                             </Typography>
                             <FormControl className={classes.pinConfirmInput} variant="outlined">
                                 <InputLabel htmlFor="outline-confirm-pin">Confirm PIN</InputLabel>

@@ -1,5 +1,6 @@
-import { hashId } from '@bvotal/common';
+import {hashId, hashText} from '@bvotal/common';
 import { generateMasterKeys, PassPhraseGenerator, encryptAES, decryptAES, Keys } from '@burstjs/crypto';
+import {convertByteArrayToHexString } from '@burstjs/util';
 
 const StorageKeys = {
     Passphrase: 'p'
@@ -11,8 +12,8 @@ export const Security = {
     },
     generatePassphrase: async (hashId: string) => {
         const typedArray = new Uint8Array(64);
-        const random = window.crypto.getRandomValues(typedArray).join();
-        const seed = hashId + random;
+        const random = window.crypto.getRandomValues(typedArray)
+        const seed = hashText(hashId + convertByteArrayToHexString(random))
         const generator = new PassPhraseGenerator();
         const words = await generator.generatePassPhrase(Array.from(seed))
         return words.join(" ")

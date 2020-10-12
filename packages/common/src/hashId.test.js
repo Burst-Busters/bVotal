@@ -1,5 +1,6 @@
 const {hashId} = require("./hashId");
 
+
 describe('hashId', () => {
     it('should generate hash as expected', () => {
         const hashedId1 = hashId({id: '1234', dob: "23-11-1976"})

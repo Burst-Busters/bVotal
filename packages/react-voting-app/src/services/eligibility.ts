@@ -5,13 +5,13 @@ import {
     composeApi,
     isAttachmentVersion,
     Transaction,
-    TransactionArbitrarySubtype,
+    TransactionPaymentSubtype,
     TransactionType
 } from "@burstjs/core"
 import {ActivationMessage, ActivationState, VotingOption} from "../typings";
 
 const http = new HttpImpl('http://localhost:3001/api')
-const BurstApi = composeApi(new ApiSettings('http://localhost:6786'))
+const BurstApi = composeApi(new ApiSettings('http://localhost:6876'))
 
 const Seconds = 1000
 
@@ -21,9 +21,9 @@ const VotingAddressKey = 'vaddr'
 let interval: NodeJS.Timeout
 
 function getMessageText(transaction: Transaction) {
-    return isAttachmentVersion(transaction, 'EncryptedMessage')
-        ? null
-        : transaction.attachment.message;
+    return isAttachmentVersion(transaction, 'Message')
+        ? transaction.attachment.message
+        : null
 }
 
 function storeVotingOptions(vopts: VotingOption[]): void {
@@ -38,10 +38,10 @@ async function checkForActivationMessage(publicKey: string): Promise<void> {
     const accountId = getAccountIdFromPublicKey(publicKey)
     const {transactions} = await BurstApi.account.getAccountTransactions({
         accountId,
-        type: TransactionType.Arbitrary,
-        subtype: TransactionArbitrarySubtype.Message
+        type: TransactionType.Payment,
+        subtype: TransactionPaymentSubtype.Ordinary
     })
-    if (!transactions.length) {
+    if (transactions.length) {
         let message = '';
         for (let i = 0; i < transactions.length; i++) {
             try {
@@ -65,9 +65,9 @@ export const Eligibility = {
             pub: publicKey
         })
     },
-    getVotingOptions: (): VotingOption[] | null => {
+    getVotingOptions: (): VotingOption[] => {
         const vopts = localStorage.getItem(VotingOptionsKey);
-        return vopts ? JSON.parse(vopts) : null
+        return vopts ? JSON.parse(vopts) : []
     },
     getVotingAddress: (): string | null => {
         return localStorage.getItem(VotingAddressKey);
@@ -76,23 +76,46 @@ export const Eligibility = {
         if (!Eligibility.getVotingAddress()) return ActivationState.Pending
         return ActivationState.Activated
     },
-    checkIfAccountExists: async (publicKey: string) => {
-        const accountId = getAccountIdFromPublicKey(publicKey);
-        return await BurstApi.account.getAccount(accountId);
+    hasVoted: async (publicKey: string) => {
+        try {
+            const accountId = getAccountIdFromPublicKey(publicKey);
+            await BurstApi.account.getAccount(accountId);
+            // TODO: check for real voting message
+            return true
+        } catch (e) {
+            return false
+        }
     },
-    waitForActivationMessage: async (publicKey: string) => {
+    waitForActivationMessage: async (publicKey: string): Promise<{ stop: () => void }> => {
         // TODO: improve polling later
         if (interval) {
             clearInterval(interval)
         }
-        return new Promise((resolve) => {
-            interval = setInterval(() => {
-                checkForActivationMessage(publicKey);
-                if(Eligibility.getActivationState() === ActivationState.Activated){
-                    window.dispatchEvent( new CustomEvent('@bvotal/activated'))
+
+        async function poll() {
+            try {
+                await checkForActivationMessage(publicKey);
+                if (Eligibility.getActivationState() === ActivationState.Activated) {
+                    console.log("Account activated...Yay")
+                    window.dispatchEvent(new CustomEvent('@bvotal/activated'))
                 }
-            }, 30 * Seconds)
-        })
+            } catch (e) {
+                // ignore exception
+            }
+        }
+
+        await poll()
+        // TODO: configurlable pollin interval
+        interval = setInterval(async () => {
+            await poll()
+        }, 10 * Seconds)
+
+        return {
+            stop: () => {
+                console.log("Stopped polling")
+                clearInterval(interval)
+            }
+        };
     }
 }
 
