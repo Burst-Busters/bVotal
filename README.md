@@ -26,3 +26,7 @@ Start service
 While running locally, you might want to emulate mining on the blockchain.
 Use the command 
 * `$ yarn dev:forge`
+
+
+## Credits:
+<a href="https://www.freepik.com/vectors/paper">Paper vector created by freepik - www.freepik.com</a>

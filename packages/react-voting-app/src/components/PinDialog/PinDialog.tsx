@@ -7,6 +7,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
 import { FormControl, InputAdornment, InputLabel, OutlinedInput, TextField, Typography } from '@material-ui/core';
+import PinInput from '../PinInput/PinInput';
 import {VotingOption} from "../../typings";
 
 export type PinDialogProps = {
@@ -37,7 +38,7 @@ export default function PinDialog(props: PinDialogProps) {
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
         >
-            <DialogTitle id="alert-dialog-title">{"Is the information correct?"}</DialogTitle>
+            <DialogTitle id="alert-dialog-title">{"Please type your 5 Digit PIN to vote"}</DialogTitle>
             <DialogContent>
             <DialogContentText id="alert-dialog-description">
                 <Typography>
@@ -45,20 +46,7 @@ export default function PinDialog(props: PinDialogProps) {
                 </Typography>
 
             </DialogContentText>
-            <FormControl variant="outlined">
-                <InputLabel htmlFor="outline-doc">5 Digit PIN</InputLabel>
-                <OutlinedInput
-                    id="outline-doc"
-                    type={'text'}
-                    onChange={e => handlePinChange(e.target.value)}
-                    labelWidth={125}
-                    endAdornment={
-                        <InputAdornment position="end">
-                            <VpnKeyIcon/>
-                        </InputAdornment>
-                    }
-                />
-            </FormControl>
+            <PinInput onChange={handlePinChange} />
             </DialogContent>
             <DialogActions>
             <Button onClick={handleClose} color="primary">
