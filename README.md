@@ -15,6 +15,8 @@ Anonymous, secret, transparent, cheap and scalable voting system based on Burstc
 
 In package `eligibility-service`:
 
+Copy the .env.example to a .env file and change accordingly
+
 Run only once (or everytime you want to wipe the data)
 * `$ yarn dev:bootstrap`
 
