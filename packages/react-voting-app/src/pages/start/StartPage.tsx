@@ -80,7 +80,7 @@ function StartPage() {
                   </List>
                 </CardContent>
               </div>
-              <CardMedia className={classes.cardMedia} image={`http://placehold.it/160x300`} title="asdasdas" />
+              <CardMedia className={classes.cardMedia} image={`./vote-now.jpg`} title="asdasdas" />
             </Card>
             <Fab 
               onClick={handleGoClick} 

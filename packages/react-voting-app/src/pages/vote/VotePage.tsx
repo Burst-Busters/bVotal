@@ -19,6 +19,7 @@ import {
 import {useHistory} from 'react-router-dom';
 import {VotingOption} from "../../typings";
 import {Eligibility} from "../../services";
+import PinDialog from '../../components/PinDialog/PinDialog';
 
 const useStyles = makeStyles((theme) => ({
     VotePage: {
@@ -86,6 +87,7 @@ function VotePage(props: VotePageProps) {
     const votingOptions = location.state.votingOptions;
     const [loading, setLoading] = useState(false);
     const [checked, setChecked] = React.useState<VotingOption[]>([]);
+    const [open, setOpen] = useState(false);
 
     const handleToggle = (value: VotingOption) => () => {
         const currentIndex = checked.indexOf(value);
@@ -99,20 +101,27 @@ function VotePage(props: VotePageProps) {
 
         setChecked(newChecked);
     };
-
-    const handleFabClick = async () => {
+    const doVote = async (pin: string) => {
         try {
             // TODO: get the pin
-            const pin = '';
             setLoading(true)
             await Eligibility.vote(checked[0], pin)
             history.push(`/thank-you`);
         } catch (e) {
             // TODO: decent error handling
-            console.error('Oh no...')
+            alert(`Something went wrong. Please try again. Double check your PIN`)
+            console.error('Oh no...', e)
         } finally {
             setLoading(false)
         }
+    }
+
+    const handleFabClick = () => {
+        setOpen(true);
+    }
+
+    const handlePinConfirm = (pin: string) => {
+        doVote(pin);
     }
 
     return (
@@ -175,6 +184,7 @@ function VotePage(props: VotePageProps) {
                     aria-label="go">
                     Vote!
                 </Fab>
+                <PinDialog onConfirm={handlePinConfirm} open={open} setOpen={setOpen} />
             </Paper>
         </div>
     );
