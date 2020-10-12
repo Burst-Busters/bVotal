@@ -1,6 +1,6 @@
 {
-  "short_name": "BVotal",
-  "name": "BVotal Mvp",
+  "short_name": "BVotal Results Dashboard",
+  "name": "Create BVotal Results Dashboard Sample",
   "icons": [
     {
       "src": "favicon.ico",

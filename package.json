@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "dev:frontend": "yarn --cwd packages/react-voting-app start",
+    "dev:dashboard": "yarn --cwd packages/react-results-dashboard start",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "workspaces": [
