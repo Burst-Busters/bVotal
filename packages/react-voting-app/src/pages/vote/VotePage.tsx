@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Avatar, Backdrop, Card, CardContent, Checkbox, CircularProgress, Fab, List, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText, makeStyles, Paper, Typography } from '@material-ui/core';
+import { Avatar, Backdrop, Card, CardContent, Checkbox, CircularProgress, Fab, List, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText, makeStyles, Paper, Radio, Typography } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import {VotingAddress, VotingOption} from "../../typings";
 const useStyles = makeStyles((theme) => ({
@@ -102,7 +102,7 @@ function VotePage(props: VotePageProps) {
 
                     <List dense className={classes.root}>
                         {votingOptions.map((value) => {
-                            const labelId = `checkbox-list-secondary-label-${value}`;
+                            const labelId = `radio-vote-${value}`;
                             return (
                             <ListItem key={value.key} onClick={handleToggle(value)} button>
                                 <ListItemAvatar>
@@ -113,12 +113,14 @@ function VotePage(props: VotePageProps) {
                                 </ListItemAvatar>
                                 <ListItemText id={labelId} primary={value.title} secondary={value.desc} />
                                 <ListItemSecondaryAction>
-                                <Checkbox
+                                  <Radio
                                     edge="end"
-                                    onChange={handleToggle(value)}
                                     checked={checked.indexOf(value) !== -1}
+                                    onChange={handleToggle(value)}
+                                    value={value.key}
+                                    name="radio-button-vote"
                                     inputProps={{ 'aria-labelledby': labelId }}
-                                />
+                                  />
                                 </ListItemSecondaryAction>
                             </ListItem>
                             );
