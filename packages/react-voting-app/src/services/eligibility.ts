@@ -1,5 +1,6 @@
 import {HttpImpl, HttpResponse} from "@burstjs/http"
 import {getAccountIdFromPublicKey} from "@burstjs/crypto"
+import {BurstValue} from "@burstjs/util"
 import {
     ApiSettings,
     composeApi,
@@ -9,6 +10,7 @@ import {
     TransactionType
 } from "@burstjs/core"
 import {ActivationMessage, ActivationState, VotingOption} from "../typings";
+import {Security} from "./security";
 
 const http = new HttpImpl('http://localhost:3001/api')
 const BurstApi = composeApi(new ApiSettings('http://localhost:6876'))
@@ -58,22 +60,35 @@ async function checkForActivationMessage(publicKey: string): Promise<void> {
     }
 }
 
+async function sendEncryptedVote({key}: VotingOption, pin: string): Promise<void> {
 
-function sendEncryptedVote(vote: VotingOption, pin: string): Promise<void> {
-    //
-    // BurstApi.account.getAccountBalance()
-    //
-    // BurstApi.message.sendEncryptedMessage({
-    //     feePlanck
-    // })
-    return Promise.resolve()
+    let passphrase = Security.getPassphrase(pin);
+    const senderKeys = Security.generateKeys(passphrase)
+    const accountId = getAccountIdFromPublicKey(senderKeys.publicKey)
+    const {balanceNQT} = await BurstApi.account.getAccountBalance(accountId);
+
+    let votingPublicKey = Eligibility.getVotingPublicKey();
+
+    if(!votingPublicKey){
+        throw Error('No voting public key found')
+    }
+
+    const feePlanck = BurstValue.fromPlanck(balanceNQT).getPlanck()
+    const message = JSON.stringify({key})
+    const recipientPublicKey = votingPublicKey
+    const recipientId = getAccountIdFromPublicKey(votingPublicKey)
+    await BurstApi.message.sendEncryptedMessage({
+        message,
+        feePlanck,
+        recipientId,
+        recipientPublicKey,
+        senderKeys,
+    })
 }
 
 export const Eligibility = {
     vote: async (vote: VotingOption, pin: string): Promise<void> => {
-        // TODO
-        console.log('Voting', vote)
-        return Promise.resolve()
+        await sendEncryptedVote(vote, pin)
     },
     register: async (hashId: string, publicKey: string): Promise<HttpResponse> => {
         return http.post('/register', {

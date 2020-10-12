@@ -84,7 +84,7 @@ function VotePage(props: VotePageProps) {
     const {location} = props;
     const history = useHistory();
     const votingOptions = location.state.votingOptions;
-    const [loading] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [checked, setChecked] = React.useState<VotingOption[]>([]);
 
     const handleToggle = (value: VotingOption) => () => {
@@ -101,13 +101,19 @@ function VotePage(props: VotePageProps) {
     };
 
     const handleFabClick = async () => {
-
-        // TODO: get the pin
-        const pin = '';
-        await Eligibility.vote(checked[0], pin)
-        history.push(`/thank-you`);
+        try {
+            // TODO: get the pin
+            const pin = '';
+            setLoading(true)
+            await Eligibility.vote(checked[0], pin)
+            history.push(`/thank-you`);
+        } catch (e) {
+            // TODO: decent error handling
+            console.error('Oh no...')
+        } finally {
+            setLoading(false)
+        }
     }
-
 
     return (
         <div className={classes.VotePage}>
@@ -152,6 +158,9 @@ function VotePage(props: VotePageProps) {
                             </List>
 
                             <Backdrop className={classes.backdrop} open={loading}>
+                                <Typography variant="h2" align="center">
+                                    Sending your vote
+                                </Typography>
                                 <CircularProgress color="inherit"/>
                             </Backdrop>
                         </CardContent>
@@ -159,6 +168,7 @@ function VotePage(props: VotePageProps) {
                 </Card>
                 <Fab
                     onClick={handleFabClick}
+                    disabled={!checked.length}
                     className={classes.fab}
                     size="large"
                     color="secondary"
