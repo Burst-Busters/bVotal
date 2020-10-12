@@ -69,7 +69,7 @@ function ThankYouPage() {
             Thank you!
           </Typography>
           <Card className={classes.root}>
-            <Link to="/">
+            <Link style={{textDecoration: 'none', color: 'black'}} to="/">
               <CardActionArea>
                   <CardContent>
                       <Typography gutterBottom variant="h5" component="h2">
