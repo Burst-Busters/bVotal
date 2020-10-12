@@ -15,12 +15,11 @@ async function sendActivationMessage({recipientPublicKey, activationPassphrase, 
     const recipientId = getAccountIdFromPublicKey(recipientPublicKey);
     const senderKeys = generateMasterKeys(activationPassphrase);
 
-    const votingAccKeys = generateMasterKeys(votingPassphrase);
-    const votingAddress = getAccountIdFromPublicKey(votingAccKeys.publicKey);
+    const {publicKey} = generateMasterKeys(votingPassphrase);
 
     const activationMessage = {
         vopts: votingOptions,
-        vaddrs: votingAddress
+        vpubk: publicKey
     }
 
     const attachment = new AttachmentMessage({
