@@ -8,16 +8,17 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
 import { FormControl, InputAdornment, InputLabel, OutlinedInput, TextField, Typography } from '@material-ui/core';
 import PinInput from '../PinInput/PinInput';
+import {VotingOption} from "../../typings";
 
 export type PinDialogProps = {
-    document?: string;
+    option?: VotingOption;
     open: boolean,
     setOpen: (value: boolean) => void;
     onConfirm: (pin: string) => void;
 }
 
 export default function PinDialog(props: PinDialogProps) {
-    const { document, onConfirm, open, setOpen } = props;
+    const { option, onConfirm, open, setOpen } = props;
     const [pin, setPin] = useState<string>('');
     const handlePinChange = (value: string) => setPin(value);
     const handleConfirm = () => {
@@ -40,7 +41,9 @@ export default function PinDialog(props: PinDialogProps) {
             <DialogTitle id="alert-dialog-title">{"Please type your 5 Digit PIN to vote"}</DialogTitle>
             <DialogContent>
             <DialogContentText id="alert-dialog-description">
-            
+                <Typography>
+                    <b>You vote for: </b> {option?.title}
+                </Typography>
 
             </DialogContentText>
             <PinInput onChange={handlePinChange} />
@@ -50,7 +53,7 @@ export default function PinDialog(props: PinDialogProps) {
                 Cancel
             </Button>
             <Button onClick={handleConfirm} color="primary" autoFocus>
-                I Agree
+                Confirm Vote
             </Button>
             </DialogActions>
         </Dialog>

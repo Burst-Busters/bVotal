@@ -25,8 +25,7 @@ export const Security = {
     getPassphrase: (pin:string): string => {
         const encrypted = window.localStorage.getItem(StorageKeys.Passphrase);
         if(!encrypted){
-            console.warn('Secured Passphrase not found')
-            return ''
+            throw new Error('Secured Passphrase not found')
         }
         return decryptAES(encrypted, pin)
     },

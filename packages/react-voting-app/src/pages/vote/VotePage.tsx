@@ -92,17 +92,16 @@ function VotePage(props: VotePageProps) {
     const handleToggle = (value: VotingOption) => () => {
         setChecked(value);
     };
-    const doVote = async (pin: string) => {
+
+    const handlePinConfirm = async (pin: string) => {
         try {
-            // TODO: get the pin
             if (!checked) return;
             setLoading(true)
             await Eligibility.vote(checked, pin)
-            history.push(`/thank-you`);
+            history.replace(`/thank-you`);
         } catch (e) {
             // TODO: decent error handling
-            alert(`Something went wrong. Please try again. Double check your PIN`)
-            console.error('Oh no...', e)
+            alert('Something went wrong. Please try again. Double check your PIN')
         } finally {
             setLoading(false)
         }
@@ -110,10 +109,6 @@ function VotePage(props: VotePageProps) {
 
     const handleFabClick = () => {
         setOpen(true);
-    }
-
-    const handlePinConfirm = (pin: string) => {
-        doVote(pin);
     }
 
     return (
@@ -169,14 +164,18 @@ function VotePage(props: VotePageProps) {
                 </Card>
                 <Fab
                     onClick={handleFabClick}
-                    disabled={!checked}
+                    disabled={!checked || loading}
                     className={classes.fab}
                     size="large"
                     color="secondary"
                     aria-label="go">
                     Vote!
                 </Fab>
-                <PinDialog onConfirm={handlePinConfirm} open={open} setOpen={setOpen} />
+                <PinDialog onConfirm={handlePinConfirm}
+                           open={open}
+                           setOpen={setOpen}
+                           option={checked}
+                />
             </Paper>
         </div>
     );

@@ -11,9 +11,6 @@ or simply
 
 > To change the port run as `PORT=4000 yarn dev` (or use .env file) 
 
-
-
-
 ## Configure
 
 The service is configurable using ENV vars.
