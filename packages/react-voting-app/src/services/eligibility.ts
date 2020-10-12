@@ -76,6 +76,10 @@ export const Eligibility = {
         if (!Eligibility.getVotingAddress()) return ActivationState.Pending
         return ActivationState.Activated
     },
+    checkIfAccountExists: async (publicKey: string) => {
+        const accountId = getAccountIdFromPublicKey(publicKey);
+        return await BurstApi.account.getAccount(accountId);
+    },
     waitForActivationMessage: async (publicKey: string) => {
         // TODO: improve polling later
         if (interval) {

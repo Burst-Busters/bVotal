@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     Backdrop,
     Button,
@@ -123,12 +123,22 @@ function RegisterPage() {
 
     const handleDocChange = (value: string) => setDocument(value);
     const handleFabClick = async () => {
-        if (isEligible === IS_ELIGIBLE_ENUM.YES) {
-            history.push({
-                pathname: `/create-pin`,
-                state: {passphrase, hashId},
-            })
+        const {publicKey} = Services.Security.generateKeys(passphrase);
+        setLoading(true);
+        try {
+            const account = await Services.Eligibility.checkIfAccountExists(publicKey)
+           // TODO: check if has account
+        } catch (e) {
+            // TODO: what to do if errors?
+            console.error(`error checking if has account `, e);
+            await doRegister(hashId, publicKey)
+
         }
+        finally {
+            setLoading(false);
+        }
+
+        
     }
     const onChangedDate = (dateString: string) => {
         setChosenDate(formatDateToBurst(dateString));
@@ -142,6 +152,15 @@ function RegisterPage() {
         const {publicKey} = Services.Security.generateKeys(passphrase);
         await doRegister(newHashId, publicKey)
     }
+    
+    useEffect(() => {
+        if (isEligible === IS_ELIGIBLE_ENUM.YES) {
+            history.push({
+                pathname: `/create-pin`,
+                state: {passphrase, hashId},
+            })
+        }
+    }, [isEligible])
 
     return (
         <div className={classes.RegisterPage}>
