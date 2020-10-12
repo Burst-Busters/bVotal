@@ -39,16 +39,15 @@ Use the command
 * With those values a Passphrase is generated (locally)
 * The generated passphrase is used to create the User Keys (1 private Keys and 1 public)
 * User then creates a 5 digit PIN, that is used to encript the passphrase and store it locally
+* A request to the EA is performed, EA sends funds to the user, and that is what activates user's Blockchain account
 
 ### Encripted Vote
-* A request to the Blockchain Node is performed, so user can Activate his Blockchain account
 * When a new block is forged (about 4mins in production environment), user is allowed to place its vote
-* The voting transaction is encripted, and a small fee is paid for it. The value to pay the fee is provided to the user by EA
-* 
+* The voting transaction is encripted, and a small fee is paid for it. The value to pay the fee was provided to the user by EA
 
 ### Results Reveal
-* When ellection event is finished, the EA discloses it's privateKey
-* The EA privateKey can be used by any user to decript the Blockchain Registered votes
+* When ellection event is finished, the EA discloses it's Voting campaign privateKey
+* The Voting campaign privateKey can be used by any user to decript the Blockchain Registered votes
 * The votes, decrypted, are anonymous, and contain the value of the vote, but no identity of the voter
 * This allows virtually any user to audit the ellection results, therefore making the process transparent and trustworthy
 
