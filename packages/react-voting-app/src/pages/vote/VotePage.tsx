@@ -86,26 +86,18 @@ function VotePage(props: VotePageProps) {
     const history = useHistory();
     const votingOptions = location.state.votingOptions;
     const [loading, setLoading] = useState(false);
-    const [checked, setChecked] = React.useState<VotingOption[]>([]);
+    const [checked, setChecked] = React.useState<VotingOption>();
     const [open, setOpen] = useState(false);
 
     const handleToggle = (value: VotingOption) => () => {
-        const currentIndex = checked.indexOf(value);
-        const newChecked = [...checked];
-
-        if (currentIndex === -1) {
-            newChecked.push(value);
-        } else {
-            newChecked.splice(currentIndex, 1);
-        }
-
-        setChecked(newChecked);
+        setChecked(value);
     };
     const doVote = async (pin: string) => {
         try {
             // TODO: get the pin
+            if (!checked) return;
             setLoading(true)
-            await Eligibility.vote(checked[0], pin)
+            await Eligibility.vote(checked, pin)
             history.push(`/thank-you`);
         } catch (e) {
             // TODO: decent error handling
@@ -154,7 +146,7 @@ function VotePage(props: VotePageProps) {
                                             <ListItemSecondaryAction>
                                                 <Radio
                                                     edge="end"
-                                                    checked={checked.indexOf(value) !== -1}
+                                                    checked={checked === value}
                                                     onChange={handleToggle(value)}
                                                     value={value.key}
                                                     name="radio-button-vote"
@@ -177,7 +169,7 @@ function VotePage(props: VotePageProps) {
                 </Card>
                 <Fab
                     onClick={handleFabClick}
-                    disabled={!checked.length}
+                    disabled={!checked}
                     className={classes.fab}
                     size="large"
                     color="secondary"

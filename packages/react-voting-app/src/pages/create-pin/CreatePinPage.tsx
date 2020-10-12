@@ -20,6 +20,7 @@ import {useHistory} from 'react-router-dom';
 import * as Services from "../../services"
 import {IS_ELIGIBLE_ENUM, VotingOption} from "../../typings";
 import {Eligibility} from "../../services";
+import PinInput from '../../components/PinInput/PinInput';
 
 const useStyles = makeStyles((theme) => ({
     CreatePinPage: {
@@ -141,37 +142,13 @@ function CreatePinPage(props: CreatePinPageProps) {
                             <Typography component="p" variant="body2" align="center">
                                 Create a 5 digit PIN code that you will use to Vote
                             </Typography>
-                            <FormControl className={classes.pinInput} variant="outlined">
-                                <InputLabel htmlFor="outline-pin">PIN</InputLabel>
-                                <OutlinedInput
-                                    id="outline-pin"
-                                    type={'text'}
-                                    onChange={e => handlePinChange(e.target.value)}
-                                    labelWidth={30}
-                                    endAdornment={
-                                        <InputAdornment position="end">
-                                            <EditIcon/>
-                                        </InputAdornment>
-                                    }
-                                />
-                            </FormControl>
+                            <PinInput onChange={handlePinChange} />
                             <Typography className={classes.pinConfirmLabel} component="p" variant="body2"
                                         align="center">
                                 Confirm your PIN by typing it again below:
                             </Typography>
                             <FormControl className={classes.pinConfirmInput} variant="outlined">
-                                <InputLabel htmlFor="outline-confirm-pin">Confirm PIN</InputLabel>
-                                <OutlinedInput
-                                    id="outline-confirm-pin"
-                                    type={'text'}
-                                    onChange={e => handleConfirmPinChange(e.target.value)}
-                                    labelWidth={90}
-                                    endAdornment={
-                                        <InputAdornment position="end">
-                                            <EditIcon/>
-                                        </InputAdornment>
-                                    }
-                                />
+                                <PinInput onChange={handleConfirmPinChange} />
                             </FormControl>
                         </CardContent>
                     </div>

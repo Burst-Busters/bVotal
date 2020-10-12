@@ -7,6 +7,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
 import { FormControl, InputAdornment, InputLabel, OutlinedInput, TextField, Typography } from '@material-ui/core';
+import PinInput from '../PinInput/PinInput';
 
 export type PinDialogProps = {
     document?: string;
@@ -42,20 +43,7 @@ export default function PinDialog(props: PinDialogProps) {
             
 
             </DialogContentText>
-            <FormControl variant="outlined">
-                <InputLabel htmlFor="outline-doc">5 Digit PIN</InputLabel>
-                <OutlinedInput
-                    id="outline-doc"
-                    type={'text'}
-                    onChange={e => handlePinChange(e.target.value)}
-                    labelWidth={125}
-                    endAdornment={
-                        <InputAdornment position="end">
-                            <VpnKeyIcon/>
-                        </InputAdornment>
-                    }
-                />
-            </FormControl>
+            <PinInput onChange={handlePinChange} />
             </DialogContent>
             <DialogActions>
             <Button onClick={handleClose} color="primary">
