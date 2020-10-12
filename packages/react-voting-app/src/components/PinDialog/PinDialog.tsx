@@ -36,12 +36,10 @@ export default function PinDialog(props: PinDialogProps) {
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
         >
-            <DialogTitle id="alert-dialog-title">{"Is the information correct?"}</DialogTitle>
+            <DialogTitle id="alert-dialog-title">{"Please type your 5 Digit PIN to vote"}</DialogTitle>
             <DialogContent>
             <DialogContentText id="alert-dialog-description">
-                <Typography>
-                    <b>Document: </b> {document}
-                </Typography>
+            
 
             </DialogContentText>
             <FormControl variant="outlined">
