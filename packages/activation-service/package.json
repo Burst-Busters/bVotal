@@ -1,11 +1,31 @@
 {
   "name": "@bvotal/activation-service",
   "version": "1.0.0",
-  "description": "bVotal Account Activation Service",
+  "description": "bVotal Campaign Account Activation Service",
   "main": "./src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./src/index.js",
+    "dev": "nodemon ./src/index.js",
+    "format": "standard --fix"
   },
   "author": "ohager",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@burstjs/core": "^0.6.0-alpha.9",
+    "@hapi/boom": "^9.1.1",
+    "body-parser": "^1.19.0",
+    "compression": "^1.7.4",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express-rate-limit": "^5.2.3",
+    "node-graceful-shutdown": "^1.1.0",
+    "pino": "^6.11.0",
+    "polka": "^0.5.2"
+  },
+  "devDependencies": {
+    "husky": "^5.0.8",
+    "nodemon": "^2.0.7",
+    "standard": "^16.0.3"
+  }
 }

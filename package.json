@@ -8,10 +8,10 @@
     "dev:dashboard": "yarn --cwd packages/react-results-dashboard start",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "workspaces": [
-    "packages/*"
-  ],
-  "repository": {
+  "workspaces": {
+    "packages": ["packages/*"]
+  },
+    "repository": {
     "type": "git",
     "url": "git+https://github.com/Burst-Busters/bVotal.git"
   },
