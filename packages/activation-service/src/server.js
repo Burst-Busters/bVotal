@@ -10,7 +10,7 @@ const handleError = (fn) => async (req, res) => {
   try {
     return await fn(req, res)
   } catch (e) {
-    const error = e.isBoom ? e : Boom.boomify(e);
+    const error = e.isBoom ? e : Boom.boomify(e)
     error.output.payload.message = e.message
     res.statusCode = error.output.statusCode
     logger.error(error)

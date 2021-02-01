@@ -1,6 +1,6 @@
 const { Config } = require('../../../config')
 const { generateMasterKeys, getAccountIdFromPublicKey } = require('@burstjs/crypto')
-const { convertAddressToNumericId, convertNumberToNQTString, isBurstAddress } = require('@burstjs/util')
+const { convertAddressToNumericId, isBurstAddress } = require('@burstjs/util')
 const { ApiSettings, AttachmentMessage, composeApi } = require('@burstjs/core')
 const { BurstValue } = require('@burstjs/util')
 
@@ -9,7 +9,6 @@ const WelcomeMessage = 'bVotal Campaign Account created successfully'
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = Config.IsDebugMode ? '0' : '1'
 
 class ActivatorService {
-
   constructor () {
     this.burstApi = composeApi(new ApiSettings(Config.BurstNode))
   }
@@ -29,7 +28,7 @@ class ActivatorService {
     const keys = generateMasterKeys(Config.ActivationAccountSeed)
     return {
       id: getAccountIdFromPublicKey(keys.publicKey),
-      ...keys,
+      ...keys
     }
   }
 
@@ -37,7 +36,7 @@ class ActivatorService {
     const { id: senderId } = this.__getSenderCredentials()
     const { unconfirmedTransactions } = await this.burstApi.account.getUnconfirmedAccountTransactions(
       senderId,
-      false,
+      false
     )
     if (unconfirmedTransactions.some(({ recipient }) => recipient === recipientId)) {
       throw new Error('Activation is pending')
@@ -64,25 +63,25 @@ class ActivatorService {
   }
 
   async __sendWelcomeMessage (accountId, publicKey) {
-    let { signPrivateKey, publicKey: senderPublicKey } = this.__getSenderCredentials()
-    let suggestedFees = await this.burstApi.network.getSuggestedFees()
+    const { signPrivateKey, publicKey: senderPublicKey } = this.__getSenderCredentials()
+    const suggestedFees = await this.burstApi.network.getSuggestedFees()
     const sendMessageArgs = {
       message: WelcomeMessage,
       recipientId: accountId,
       recipientPublicKey: publicKey,
       feePlanck: suggestedFees.standard + '',
       senderPrivateKey: signPrivateKey,
-      senderPublicKey: senderPublicKey,
+      senderPublicKey: senderPublicKey
     }
     await this.burstApi.message.sendMessage(sendMessageArgs)
   }
 
   async __sendWelcomeMessageWithAmount (accountId, publicKey, amountPlanck) {
-    let { signPrivateKey, publicKey: senderPublicKey } = this.__getSenderCredentials()
-    let suggestedFees = await this.burstApi.network.getSuggestedFees()
+    const { signPrivateKey, publicKey: senderPublicKey } = this.__getSenderCredentials()
+    const suggestedFees = await this.burstApi.network.getSuggestedFees()
     const attachment = new AttachmentMessage({
       messageIsText: true,
-      message: WelcomeMessage,
+      message: WelcomeMessage
     })
 
     const args = {
@@ -92,7 +91,7 @@ class ActivatorService {
       recipientId: accountId,
       recipientPublicKey: publicKey,
       senderPrivateKey: signPrivateKey,
-      senderPublicKey: senderPublicKey,
+      senderPublicKey: senderPublicKey
     }
     await this.burstApi.transaction.sendAmountToSingleRecipient(args)
   }
@@ -109,7 +108,6 @@ class ActivatorService {
       await this.__sendWelcomeMessageWithAmount(accountId, publicKey, amountPlanck)
     }
   }
-
 }
 
 module.exports = {
