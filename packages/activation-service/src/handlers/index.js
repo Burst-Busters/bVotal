@@ -1,5 +1,5 @@
-const {status} = require("./status")
-const {activate} = require("./activate")
+const { status } = require('./status')
+const { activate } = require('./activate')
 
 module.exports = {
   status,
