@@ -6,7 +6,8 @@ const Config = {
   ServicePort: process.env.PORT || 3000,
   IsDebugMode: process.env.NODE_ENV === 'development',
   BurstNode: process.env.BURST_NODE,
-  ActivationFundBurst: process.env.ACTIVATION_FUND_BURST
+  ActivationFundBurst: process.env.ACTIVATION_FUND_BURST,
+  ActivationAccountSeed: process.env.ACTIVATION_ACCOUNT_SEED
 }
 
 module.exports = {

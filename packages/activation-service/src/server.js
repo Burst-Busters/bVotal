@@ -1,4 +1,5 @@
 const polka = require('polka')
+const Boom = require('@hapi/boom')
 const { middlewares } = require('./middlewares')
 const { onShutdown } = require('node-graceful-shutdown')
 const { logger } = require('./logger')
@@ -9,30 +10,33 @@ const handleError = (fn) => async (req, res) => {
   try {
     return await fn(req, res)
   } catch (e) {
-    let message = e.message
-    res.statusCode = 500
-    if (e.isBoom) {
-      const { output } = e
-      message = JSON.stringify(output)
-      res.statusCode = output.statusCode
-    }
-    logger.error(message)
-    res.end(message)
+    const error = e.isBoom ? e : Boom.boomify(e);
+    error.output.payload.message = e.message
+    res.statusCode = error.output.statusCode
+    logger.error(error)
+    res.end(JSON.stringify(error.output.payload))
   }
 }
 
 const api = url => `api/${url}`
 
-const httpServer = polka()
+const app = polka()
   .use(...middlewares)
   .get(api('status'), handleError(status))
   .post(api('activate'), handleError(activate))
 
-onShutdown('service', httpServer.close)
+onShutdown('service', async () => {
+  try {
+    logger.info('Shutting down...')
+    // shut down whatever you need
+  } catch (e) {
+    logger.error(e)
+  }
+})
 
 async function start () {
   try {
-    httpServer.listen(Config.ServicePort, err => {
+    app.listen(Config.ServicePort, err => {
       if (err) {
         logger.error(err)
       } else {
